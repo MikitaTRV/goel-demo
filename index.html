@@ -98,6 +98,14 @@
     .go { color: var(--accent); font-size: 14px; padding-right: 4px; }
     .view { display: none; }
     .view.on { display: block; padding-bottom: 48px; }
+    #stage.enter { animation: enter 0.32s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #stage.enter { animation: none; }
+    }
     #home-crumbs { margin-top: 0; }
     .crumbs { display: flex; gap: 8px; align-items: center; margin: 28px 0 22px; font-size: 14px; line-height: 1.4; color: var(--muted); }
     .crumbs[hidden] { display: none; }
@@ -145,6 +153,7 @@
       </nav>
     </header>
 
+    <div id="stage">
     <section id="home" class="view on">
       <div class="hero">
         <h1>Христианские бренды<br>одежды в одном месте</h1>
@@ -208,6 +217,7 @@
       <div class="items" id="items"></div>
       <div class="order">Чтобы заказать, нажмите «Заказать».</div>
     </section>
+    </div>
   </div>
   <script>
     const brands = {
@@ -273,13 +283,21 @@
     const home = document.getElementById("home");
     const brand = document.getElementById("brand");
     const items = document.getElementById("items");
+    const stage = document.getElementById("stage");
     const menuBtn = document.getElementById("countries-btn");
     const menuList = document.getElementById("country-menu");
+
+    function move(update) {
+      stage.classList.remove("enter");
+      void stage.offsetWidth;
+      update();
+      window.scrollTo(0, 0);
+      stage.classList.add("enter");
+    }
 
     function showHome() {
       brand.classList.remove("on");
       home.classList.add("on");
-      window.scrollTo(0, 0);
     }
 
     function setCountry(country) {
@@ -291,7 +309,7 @@
       document.getElementById("home-crumbs").hidden = !filtered;
       if (filtered) document.getElementById("home-country").textContent = country;
       closeMenu();
-      showHome();
+      move(showHome);
     }
 
     function closeMenu() {
@@ -306,13 +324,14 @@
       document.getElementById("crumb-brand").textContent = data.title;
       document.getElementById("title").textContent = data.title;
       document.getElementById("blurb").textContent = data.blurb;
-      items.innerHTML = data.items.map(([color, name, size, price]) =>
-        `<article class="item"><div class="cloth" style="background:${color}"></div><div class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}<button type="button" class="buy">Заказать</button></div></article>`
-      ).join("");
-      home.classList.remove("on");
-      brand.classList.add("on");
       closeMenu();
-      window.scrollTo(0, 0);
+      move(() => {
+        items.innerHTML = data.items.map(([color, name, size, price]) =>
+          `<article class="item"><div class="cloth" style="background:${color}"></div><div class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}<button type="button" class="buy">Заказать</button></div></article>`
+        ).join("");
+        home.classList.remove("on");
+        brand.classList.add("on");
+      });
     }
 
     menuBtn.addEventListener("click", (event) => {
