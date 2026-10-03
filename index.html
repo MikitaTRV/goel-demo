@@ -115,7 +115,20 @@
     .items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 28px 0 40px; }
     .item { background: var(--paper); border: 1px solid var(--line); display: flex; flex-direction: column; cursor: pointer; text-align: left; }
     .item:hover { border-color: #cfc6bb; }
-    .cloth { height: 230px; flex: none; }
+    .cloth { height: 230px; flex: none; position: relative; }
+    .cloth > .ph, .product-cloth > .ph {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      display: inline-block;
+      margin: 0;
+      background: var(--paper);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+      padding: 4px 8px;
+    }
+    .item { width: 100%; }
     .item .body { padding: 16px 16px 18px; }
     .item b { display: block; font-size: 16px; line-height: 1.4; }
     .item span { display: block; color: var(--muted); font-size: 14px; line-height: 1.45; margin-top: 6px; }
@@ -131,7 +144,9 @@
     }
     .order { border-top: 1px solid var(--line); padding: 22px 0 64px; color: var(--muted); font-size: 15px; line-height: 1.55; }
     .product { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
-    .product-cloth { height: 460px; }
+    .product-cloth { height: 460px; position: relative; }
+    .size-range { margin: 12px 0 0; color: var(--muted); }
+    .size-range[hidden] { display: none; }
     .product-copy h1 { margin: 0; }
     .sizes { margin-top: 18px; }
     .sizes[hidden] { display: none; }
@@ -164,8 +179,8 @@
       <div class="menu">
         <button type="button" id="countries-btn" aria-expanded="false" aria-controls="country-menu">Страны ▾</button>
         <div class="menu-list" id="country-menu" hidden>
-          <button type="button" data-country="Беларусь">Беларусь</button>
-          <button type="button" data-country="Россия">Россия</button>
+          <button type="button" data-slug="belarus">Беларусь</button>
+          <button type="button" data-slug="russia">Россия</button>
         </div>
       </div>
       <nav class="links">
@@ -188,17 +203,17 @@
       <div data-country-group="Беларусь">
         <h2>Беларусь</h2>
         <button class="brand" data-brand="godderob">
-          <span class="swatch" style="background:#d7d2c8"></span>
+          <span class="swatch" style="background:#efe8dc"></span>
           <span><b>godderob</b><small>Свитшоты, футболки и полузипы</small></span>
           <span class="go">Смотреть</span>
         </button>
         <button class="brand" data-brand="sote">
-          <span class="swatch" style="background:#efe8dc"></span>
+          <span class="swatch" style="background:#f7f4ee"></span>
           <span><b>sote_m</b><small>Футболки и худи</small></span>
           <span class="go">Смотреть</span>
         </button>
         <button class="brand" data-brand="fami">
-          <span class="swatch" style="background:#1d1c1a"></span>
+          <span class="swatch" style="background:#f4f1ea"></span>
           <span><b>fami.ly.by</b><small>Одежда для всей семьи</small></span>
           <span class="go">Смотреть</span>
         </button>
@@ -208,7 +223,7 @@
           <span class="go">Смотреть</span>
         </button>
         <button class="brand" data-brand="sola">
-          <span class="swatch" style="background:#8d8f92"></span>
+          <span class="swatch" style="background:#f3efe8"></span>
           <span><b>sola_minsk</b><small>Футболки и худи</small></span>
           <span class="go">Смотреть</span>
         </button>
@@ -216,7 +231,7 @@
       <div data-country-group="Россия">
         <h2>Россия</h2>
         <button class="brand" data-brand="art">
-          <span class="swatch" style="background:#b7b7b7"></span>
+          <span class="swatch" style="background:#d9d9d9"></span>
           <span><b>art.brand.jesus.saves</b><small>Футболки</small></span>
           <span class="go">Смотреть</span>
         </button>
@@ -234,9 +249,10 @@
       <div class="brand-head">
         <h1 id="title"></h1>
         <p class="blurb" id="blurb"></p>
+        <p class="blurb" id="note"></p>
       </div>
       <div class="items" id="items"></div>
-      <div class="order">Чтобы заказать, нажмите «Заказать».</div>
+      <div class="order">Оформление заказа ещё не включено.</div>
     </section>
 
     <section id="product" class="view">
@@ -250,78 +266,87 @@
         <span class="here" id="product-crumb"></span>
       </div>
       <article class="product">
-        <div class="product-cloth" id="product-cloth"></div>
+        <div class="product-cloth" id="product-cloth"><span class="ph">Место под фото</span></div>
         <div class="product-copy">
           <h1 id="product-title"></h1>
+          <p class="size-range" id="size-range" hidden></p>
           <div class="sizes" id="product-sizes" hidden>
             <p>Размер</p>
             <div id="size-options"></div>
           </div>
           <p class="product-price" id="product-price" hidden></p>
           <button type="button" class="buy">Заказать</button>
-          <p class="order">Чтобы заказать, нажмите «Заказать».</p>
+          <p class="order" id="choice">Оформление заказа ещё не включено.</p>
         </div>
       </article>
     </section>
     </div>
   </div>
   <script>
+    const countryName = { belarus: "Беларусь", russia: "Россия" };
+    const countrySlug = { "Беларусь": "belarus", "Россия": "russia" };
     const brands = {
       godderob: {
         country: "Беларусь",
         title: "godderob",
         blurb: "Свитшоты, футболки и полузипы",
+        note: "Показаны не все вещи.",
         items: [
-          ["#efe8dc", "Свитшот CHILD OF GOD", "S, M, L", "154 BYN"],
-          ["#161616", "Свитшот ONLY JESUS", "S, M, L, XL", "160 BYN"],
-          ["#6f8f62", "Полузип JESUS LOVERS CLUB", "S, M, L, XL", "184 BYN"]
+          ["#efe8dc", "Свитшот CHILD OF GOD", "S, M, L", "154 BYN", "child-of-god"],
+          ["#161616", "Свитшот ONLY JESUS", "S, M, L, XL", "160 BYN", "only-jesus"],
+          ["#6f8f62", "Полузип JESUS LOVERS CLUB", "S, M, L, XL", "184 BYN", "jesus-lovers-club"]
         ]
       },
       sote: {
         country: "Беларусь",
         title: "sote_m",
         blurb: "Футболки и худи",
+        note: "Показаны не все вещи.",
         items: [
-          ["#f7f4ee", "Футболка", "XS–5XL", "75 BYN"],
-          ["#c4b8a5", "Радуйтесь", "XS–5XL", "80 BYN"],
-          ["#2c2c2c", "Худи ЛЮБОВЬ", "XS–3XL", "135 BYN"]
+          ["#f7f4ee", "ДОВЕРЯЙ БОГУ", "XS–5XL", "75 BYN", "doveryai-bogu"],
+          ["#c4b8a5", "Радуйтесь", "XS–5XL", "80 BYN", "raduites"],
+          ["#2c2c2c", "Худи ЛЮБОВЬ", "XS–3XL", "135 BYN", "lyubov"]
         ]
       },
       fami: {
         country: "Беларусь",
         title: "fami.ly.by",
         blurb: "Одежда для всей семьи",
+        note: "Ассортимент не собран. Цен в открытых подписях нет.",
         items: [
-          ["#f4f1ea", "Иисус — путь, истина, жизнь", "", ""],
-          ["#1c1c1c", "Лев и Агнец", "", ""],
-          ["#2f4f86", "JESUS", "", ""]
+          ["#f4f1ea", "Иисус — путь, истина, жизнь", "", "", "put"],
+          ["#1c1c1c", "Лев и Агнец", "", "", "lev"],
+          ["#2f4f86", "JESUS", "", "", "jesus"]
         ]
       },
       poputi: {
         country: "Беларусь",
         title: "Poputi_store",
         blurb: "Христианская одежда",
+        note: "Ассортимент не собран.",
         items: [
-          ["#c9b59a", "Новая коллекция", "", ""]
+          ["#c9b59a", "Новая коллекция", "", "", "novaya"]
         ]
       },
       sola: {
         country: "Беларусь",
         title: "sola_minsk",
         blurb: "Футболки и худи",
+        note: "Ассортимент не собран. Названы только цены на футболки и худи.",
         items: [
-          ["#f3efe8", "Футболка", "", "70 BYN"],
-          ["#8d8f92", "Худи", "", "120 BYN"]
+          ["#f3efe8", "Футболка", "", "70 BYN", "futbolka"],
+          ["#8d8f92", "Худи", "", "120 BYN", "hudi"]
         ]
       },
       art: {
         country: "Россия",
         title: "art.brand.jesus.saves",
         blurb: "Футболки",
+        note: "Показаны не все вещи.",
         items: [
-          ["#d9d9d9", "Classic STRENGTH", "Оверсайз", "2000 ₽"],
-          ["#f7f4ee", "Women VICTORY", "Оверсайз", "2000 ₽"],
-          ["#fbfbfb", "HE'S MY DEFENDER", "Оверсайз", "2000 ₽"]
+          ["#d9d9d9", "Classic STRENGTH", "Оверсайз", "2000 ₽", "strength"],
+          ["#f7f4ee", "Women VICTORY", "Оверсайз", "2000 ₽", "victory"],
+          ["#fbfbfb", "HE'S MY DEFENDER", "Оверсайз", "2000 ₽", "defender"]
         ]
       }
     };
@@ -349,79 +374,121 @@
       home.classList.add("on");
     }
 
-    function setCountry(country) {
-      const filtered = country !== "all";
-      document.querySelectorAll("[data-country-group]").forEach((group) => {
-        group.hidden = filtered && group.dataset.countryGroup !== country;
-      });
-      home.classList.toggle("filtered", filtered);
-      document.getElementById("home-crumbs").hidden = !filtered;
-      if (filtered) document.getElementById("home-country").textContent = country;
-      closeMenu();
-      move(showHome);
-    }
-
     function closeMenu() {
       menuList.hidden = true;
       menuBtn.setAttribute("aria-expanded", "false");
     }
 
-    function openBrand(id) {
+    function reveal(update, animate) {
+      if (animate) move(update);
+      else update();
+    }
+
+    function listedSizes(size) {
+      if (!size || size.includes("–")) return [];
+      return size.split(",").map((part) => part.trim()).filter(Boolean);
+    }
+
+    function writeChoice(size) {
+      document.getElementById("choice").textContent = size
+        ? `Выбран размер ${size}. Оформление заказа ещё не включено.`
+        : "Оформление заказа ещё не включено.";
+    }
+
+    function paintCountry(country, animate) {
+      const filtered = country !== "all";
+      reveal(() => {
+        document.querySelectorAll("[data-country-group]").forEach((group) => {
+          group.hidden = filtered && group.dataset.countryGroup !== country;
+        });
+        home.classList.toggle("filtered", filtered);
+        document.getElementById("home-crumbs").hidden = !filtered;
+        if (filtered) document.getElementById("home-country").textContent = country;
+        showHome();
+      }, animate);
+    }
+
+    function paintBrand(id, animate) {
       const data = brands[id];
       currentBrand = id;
-      document.getElementById("crumb-country").textContent = data.country;
-      document.getElementById("crumb-country").dataset.country = data.country;
-      document.getElementById("crumb-brand").textContent = data.title;
-      document.getElementById("title").textContent = data.title;
-      document.getElementById("blurb").textContent = data.blurb;
-      closeMenu();
-      move(() => {
-        items.innerHTML = data.items.map(([color, name, size, price], index) =>
-          `<article class="item" data-item="${index}"><div class="cloth" style="background:${color}"></div><div class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}<button type="button" class="buy">Заказать</button></div></article>`
+      reveal(() => {
+        document.getElementById("crumb-country").textContent = data.country;
+        document.getElementById("crumb-brand").textContent = data.title;
+        document.getElementById("title").textContent = data.title;
+        document.getElementById("blurb").textContent = data.blurb;
+        document.getElementById("note").textContent = data.note;
+        items.innerHTML = data.items.map(([color, name, size, price, slug]) =>
+          `<button type="button" class="item" data-slug="${slug}"><span class="cloth" style="background:${color}"><span class="ph">Место под фото</span></span><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}</span></button>`
         ).join("");
         home.classList.remove("on");
         product.classList.remove("on");
         brand.classList.add("on");
-      });
+      }, animate);
     }
 
-    const sizeScale = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"];
-
-    function sizeOptions(size) {
-      if (!size) return [];
-      const range = size.split("–");
-      if (range.length === 2) {
-        const from = sizeScale.indexOf(range[0].trim());
-        const to = sizeScale.indexOf(range[1].trim());
-        if (from !== -1 && to >= from) return sizeScale.slice(from, to + 1);
-      }
-      return size.split(",").map((part) => part.trim()).filter(Boolean);
-    }
-
-    function openProduct(index) {
-      const data = brands[currentBrand];
+    function paintProduct(id, index, animate) {
+      const data = brands[id];
       const [color, name, size, price] = data.items[index];
-      document.getElementById("product-country").textContent = data.country;
-      document.getElementById("product-country").dataset.country = data.country;
-      document.getElementById("product-brand").textContent = data.title;
-      document.getElementById("product-crumb").textContent = name;
-      document.getElementById("product-title").textContent = name;
-      document.getElementById("product-cloth").style.background = color;
-      const options = sizeOptions(size);
-      const sizes = document.getElementById("product-sizes");
-      sizes.hidden = options.length === 0;
-      document.getElementById("size-options").innerHTML = options.map((option) =>
-        `<button type="button" class="size">${option}</button>`
-      ).join("");
-      const priceEl = document.getElementById("product-price");
-      priceEl.hidden = !price;
-      priceEl.textContent = price;
-      closeMenu();
-      move(() => {
+      currentBrand = id;
+      reveal(() => {
+        document.getElementById("product-country").textContent = data.country;
+        document.getElementById("product-brand").textContent = data.title;
+        document.getElementById("product-crumb").textContent = name;
+        document.getElementById("product-title").textContent = name;
+        document.getElementById("product-cloth").style.background = color;
+        const options = listedSizes(size);
+        const range = document.getElementById("size-range");
+        const sizes = document.getElementById("product-sizes");
+        range.hidden = !size || options.length > 0;
+        range.textContent = size && options.length === 0 ? `Размеры ${size}` : "";
+        sizes.hidden = options.length === 0;
+        document.getElementById("size-options").innerHTML = options.map((option) =>
+          `<button type="button" class="size">${option}</button>`
+        ).join("");
+        const priceEl = document.getElementById("product-price");
+        priceEl.hidden = !price;
+        priceEl.textContent = price;
+        document.getElementById("choice").textContent = size && options.length === 0
+          ? `Размеры ${size}. Оформление заказа ещё не включено.`
+          : "Оформление заказа ещё не включено.";
         home.classList.remove("on");
         brand.classList.remove("on");
         product.classList.add("on");
-      });
+      }, animate);
+    }
+
+    function apply(animate) {
+      const [first, second] = location.hash.replace(/^#/, "").split("/").filter(Boolean);
+      closeMenu();
+      if (!first) {
+        paintCountry("all", animate);
+        return;
+      }
+      if (countryName[first] && !second) {
+        paintCountry(countryName[first], animate);
+        return;
+      }
+      if (brands[first] && !second) {
+        paintBrand(first, animate);
+        return;
+      }
+      if (brands[first] && second) {
+        const index = brands[first].items.findIndex((item) => item[4] === second);
+        if (index !== -1) {
+          paintProduct(first, index, animate);
+          return;
+        }
+      }
+      paintCountry("all", animate);
+    }
+
+    function navigate(hash) {
+      const next = hash === "#" ? "" : hash;
+      if (location.hash === next) {
+        apply(true);
+        return;
+      }
+      location.hash = next;
     }
 
     menuBtn.addEventListener("click", (event) => {
@@ -433,33 +500,36 @@
     menuList.addEventListener("click", (event) => event.stopPropagation());
     document.addEventListener("click", closeMenu);
 
-    document.querySelectorAll("[data-country]").forEach((button) => {
-      button.addEventListener("click", () => setCountry(button.dataset.country));
+    document.querySelectorAll("[data-slug]").forEach((button) => {
+      button.addEventListener("click", () => navigate("#" + button.dataset.slug));
     });
-    document.getElementById("logo").addEventListener("click", () => setCountry("all"));
-    document.getElementById("home-all").addEventListener("click", () => setCountry("all"));
-    document.getElementById("crumb-all").addEventListener("click", () => setCountry("all"));
+    document.getElementById("logo").addEventListener("click", () => navigate("#"));
+    document.getElementById("home-all").addEventListener("click", () => navigate("#"));
+    document.getElementById("crumb-all").addEventListener("click", () => navigate("#"));
     document.getElementById("crumb-country").addEventListener("click", () => {
-      setCountry(document.getElementById("crumb-country").dataset.country);
+      navigate("#" + countrySlug[document.getElementById("crumb-country").textContent]);
     });
     document.querySelectorAll("[data-brand]").forEach((button) => {
-      button.addEventListener("click", () => openBrand(button.dataset.brand));
+      button.addEventListener("click", () => navigate("#" + button.dataset.brand));
     });
     items.addEventListener("click", (event) => {
-      if (event.target.closest(".buy")) return;
-      const card = event.target.closest("[data-item]");
-      if (card) openProduct(Number(card.dataset.item));
+      const card = event.target.closest("[data-slug]");
+      if (card) navigate(`#${currentBrand}/${card.dataset.slug}`);
     });
-    document.getElementById("product-all").addEventListener("click", () => setCountry("all"));
+    document.getElementById("product-all").addEventListener("click", () => navigate("#"));
     document.getElementById("product-country").addEventListener("click", () => {
-      setCountry(document.getElementById("product-country").dataset.country);
+      navigate("#" + countrySlug[document.getElementById("product-country").textContent]);
     });
-    document.getElementById("product-brand").addEventListener("click", () => openBrand(currentBrand));
+    document.getElementById("product-brand").addEventListener("click", () => navigate("#" + currentBrand));
     document.getElementById("size-options").addEventListener("click", (event) => {
       const button = event.target.closest(".size");
       if (!button) return;
       document.querySelectorAll(".size").forEach((item) => item.classList.toggle("on", item === button));
+      writeChoice(button.textContent);
     });
+
+    apply(false);
+    window.addEventListener("hashchange", () => apply(true));
   </script>
 </body>
 </html>
