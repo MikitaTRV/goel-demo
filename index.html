@@ -460,7 +460,7 @@
         document.getElementById("blurb").textContent = data.blurb;
         document.getElementById("note").textContent = data.note;
         items.innerHTML = data.items.map(([color, name, size, price, slug]) =>
-          `<a class="item" href="#${id}/${slug}" data-slug="${slug}" style="--swatch:${color};background-image:linear-gradient(${color},${color})"><div class="cloth" style="--swatch:${color}"><span class="ph">Место под фото</span></div><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}</span></a>`
+          `<a class="item" href="?${id}/${slug}" data-slug="${slug}" style="--swatch:${color};background-image:linear-gradient(${color},${color})"><div class="cloth" style="--swatch:${color}"><span class="ph">Место под фото</span></div><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}</span></a>`
         ).join("");
         home.classList.remove("on");
         product.classList.remove("on");
@@ -501,8 +501,14 @@
       }, animate);
     }
 
+    function currentRoute() {
+      const query = location.search.replace(/^\?/, "");
+      if (query) return decodeURIComponent(query);
+      return location.hash.replace(/^#/, "");
+    }
+
     function apply(animate) {
-      const [first, second] = location.hash.replace(/^#/, "").split("/").filter(Boolean);
+      const [first, second] = currentRoute().split("/").filter(Boolean);
       closeMenu();
       if (!first) {
         paintCountry("all", animate);
@@ -526,13 +532,14 @@
       paintCountry("all", animate);
     }
 
-    function navigate(hash) {
-      const next = hash === "#" ? "" : hash;
-      if (location.hash === next) {
+    function navigate(route) {
+      const next = String(route).replace(/^#/, "");
+      if (currentRoute() === next) {
         apply(true);
         return;
       }
-      location.hash = next;
+      history.pushState(null, "", next ? location.pathname + "?" + next : location.pathname);
+      apply(true);
     }
 
     menuBtn.addEventListener("click", (event) => {
@@ -557,8 +564,11 @@
       button.addEventListener("click", () => navigate("#" + button.dataset.brand));
     });
     items.addEventListener("click", (event) => {
-      const card = event.target.closest("[data-slug]");
-      if (card) navigate(`#${currentBrand}/${card.dataset.slug}`);
+      const card = event.target.closest("a.item");
+      if (!card) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+      event.preventDefault();
+      navigate(`${currentBrand}/${card.dataset.slug}`);
     });
     document.getElementById("product-all").addEventListener("click", () => navigate("#"));
     document.getElementById("product-country").addEventListener("click", () => {
@@ -573,7 +583,10 @@
     });
 
     apply(false);
-    window.addEventListener("hashchange", () => apply(true));
+    window.addEventListener("popstate", () => apply(true));
+    window.addEventListener("hashchange", () => {
+      if (!location.search) apply(true);
+    });
   </script>
 </body>
 </html>
