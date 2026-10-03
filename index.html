@@ -95,7 +95,7 @@
       padding: 12px;
       margin-top: 10px;
     }
-    .swatch { display: block; width: 64px; height: 64px; background-color: var(--fill); }
+    .swatch { display: block; width: 64px; height: 64px; }
     .brand b { display: block; font-size: 17px; line-height: 1.35; }
     .brand small { display: block; margin-top: 5px; color: var(--muted); font-size: 14px; line-height: 1.45; }
     .go { color: var(--accent); font-size: 14px; padding-right: 4px; }
@@ -104,8 +104,8 @@
     .view.on { display: block; padding-bottom: 48px; }
     #stage.enter { animation: enter 0.32s cubic-bezier(0.2, 0.8, 0.2, 1); }
     @keyframes enter {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: none; }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     @media (prefers-reduced-motion: reduce) {
       #stage.enter { animation: none; }
@@ -119,7 +119,7 @@
     .items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 28px 0 40px; }
     .item { background: var(--paper); border: 1px solid var(--line); display: flex; flex-direction: column; cursor: pointer; text-align: left; }
     .item:hover { border-color: #cfc6bb; }
-    .cloth { height: 230px; flex: none; position: relative; outline: 1px solid #cfc6bb; outline-offset: -1px; background-color: var(--fill); }
+    .cloth { height: 230px; flex: none; position: relative; outline: 1px solid #cfc6bb; outline-offset: -1px; }
     .cloth > .ph, .product-cloth > .ph {
       position: absolute;
       left: 12px;
@@ -141,7 +141,7 @@
     .ahead { margin: 8px 0 0; font-size: 15px; line-height: 1.5; }
     .order { margin: 16px 0 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
     .product { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
-    .product-cloth { height: 460px; position: relative; outline: 1px solid #cfc6bb; outline-offset: -1px; background-color: var(--fill, #f3efe8); }
+    .product-cloth { height: 460px; position: relative; outline: 1px solid #cfc6bb; outline-offset: -1px; }
     .size-range { margin: 12px 0 0; color: var(--muted); }
     .size-range[hidden] { display: none; }
     .product-copy h1 { margin: 0; }
@@ -209,27 +209,27 @@
       <div data-country-group="Беларусь">
         <h2>Беларусь</h2>
         <button class="brand" data-brand="godderob">
-          <span class="swatch" style="--fill:#efe8dc"></span>
+          <span class="swatch" style="background-color:#efe8dc"></span>
           <span><b>godderob</b><small>Свитшоты, футболки и полузипы</small></span>
           <span class="go">Смотреть</span>
         </button>
         <button class="brand" data-brand="sote">
-          <span class="swatch" style="--fill:#f7f4ee"></span>
+          <span class="swatch" style="background-color:#f7f4ee"></span>
           <span><b>sote_m</b><small>Футболки и худи</small></span>
           <span class="go">Смотреть</span>
         </button>
         <button class="brand wait" data-brand="fami">
-          <span class="swatch" style="--fill:#f4f1ea"></span>
+          <span class="swatch" style="background-color:#f4f1ea"></span>
           <span><b>fami.ly.by</b><small>Ассортимент ещё не собран</small></span>
           <span class="go">Открыть</span>
         </button>
         <button class="brand wait" data-brand="poputi">
-          <span class="swatch" style="--fill:#c9b59a"></span>
+          <span class="swatch" style="background-color:#c9b59a"></span>
           <span><b>Poputi_store</b><small>Ассортимент ещё не собран</small></span>
           <span class="go">Открыть</span>
         </button>
         <button class="brand wait" data-brand="sola">
-          <span class="swatch" style="--fill:#f3efe8"></span>
+          <span class="swatch" style="background-color:#f3efe8"></span>
           <span><b>sola_minsk</b><small>Названы только цены</small></span>
           <span class="go">Открыть</span>
         </button>
@@ -237,7 +237,7 @@
       <div data-country-group="Россия">
         <h2>Россия</h2>
         <button class="brand" data-brand="art">
-          <span class="swatch" style="--fill:#d9d9d9"></span>
+          <span class="swatch" style="background-color:#d9d9d9"></span>
           <span><b>art.brand.jesus.saves</b><small>Футболки</small></span>
           <span class="go">Смотреть</span>
         </button>
@@ -439,7 +439,7 @@
         document.getElementById("blurb").textContent = data.blurb;
         document.getElementById("note").textContent = data.note;
         items.innerHTML = data.items.map(([color, name, size, price, slug]) =>
-          `<button type="button" class="item" data-slug="${slug}"><span class="cloth" style="--fill:${color}"><span class="ph">Место под фото</span></span><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}</span></button>`
+          `<a class="item" href="#${id}/${slug}" data-slug="${slug}"><div class="cloth" style="background-color:${color};background-image:linear-gradient(${color},${color})"><span class="ph">Место под фото</span></div><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}</span></a>`
         ).join("");
         home.classList.remove("on");
         product.classList.remove("on");
@@ -456,7 +456,9 @@
         document.getElementById("product-brand").textContent = data.title;
         document.getElementById("product-crumb").textContent = name;
         document.getElementById("product-title").textContent = name;
-        document.getElementById("product-cloth").style.setProperty("--fill", color);
+        const cloth = document.getElementById("product-cloth");
+        cloth.style.backgroundColor = color;
+        cloth.style.backgroundImage = `linear-gradient(${color},${color})`;
         const options = listedSizes(size);
         const range = document.getElementById("size-range");
         const sizes = document.getElementById("product-sizes");
