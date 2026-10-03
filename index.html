@@ -182,6 +182,9 @@
     }
     .size.on { background: var(--ink); color: #fff; border-color: var(--ink); }
     .product-price { margin: 16px 0 0; font-size: 18px; }
+    .source { margin: 14px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .source[hidden] { display: none; }
+    .source a { color: inherit; }
     .buy {
       display: inline-block;
       margin-top: 22px;
@@ -249,10 +252,10 @@
           <span><b>Poputi_store</b><small>Ассортимент ещё не собран</small></span>
           <span class="go">Открыть</span>
         </button>
-        <button class="brand wait" data-brand="sola">
-          <span class="swatch" style="background-color:#f3efe8"></span>
-          <span><b>sola_minsk</b><small>Названы только цены</small></span>
-          <span class="go">Открыть</span>
+        <button class="brand" data-brand="sola">
+          <span class="swatch" style="background-color:#2c2c2c"></span>
+          <span><b>sola_minsk</b><small>Футболки и худи</small></span>
+          <span class="go">Смотреть</span>
         </button>
       </div>
       <div data-country-group="Россия">
@@ -302,6 +305,7 @@
             <div id="size-options"></div>
           </div>
           <p class="product-price" id="product-price" hidden></p>
+          <p class="source" id="product-source" hidden></p>
           <button type="button" class="buy">Заказать</button>
           <p class="order" id="choice">Оформление заказа ещё не включено.</p>
         </div>
@@ -359,10 +363,37 @@
         country: "Беларусь",
         title: "sola_minsk",
         blurb: "Футболки и худи",
-        note: "Ассортимент не собран. Названы только цены на футболки и худи.",
+        note: "Названия и текущие цены с christ.by. Буквенных размеров на сайте нет, посадка Oversize.",
+        source: "christ.by",
+        sourceHref: "https://christ.by/",
         items: [
-          ["#f3efe8", "Футболка", "", "70 BYN", "futbolka"],
-          ["#8d8f92", "Худи", "", "120 BYN", "hudi"]
+          ["#2c2c2c", "Футболка Grace", "Oversize", "75 BYN", "grace"],
+          ["#2c2c2c", "Худи Grace", "Oversize", "120 BYN", "hudi-grace"],
+          ["#2c2c2c", "Футболка Jesus (леопард)", "Oversize", "80 BYN", "jesus-leopard"],
+          ["#2c2c2c", "Футболка Born Again Christian Dior", "Oversize", "75 BYN", "born-again"],
+          ["#2c2c2c", "Футболка Jesus The Only Way", "Oversize", "75 BYN", "jesus-the-only-way"],
+          ["#2c2c2c", "Футболка Jesus Saves", "Oversize", "75 BYN", "jesus-saves"],
+          ["#2c2c2c", "Худи Saved by Jesus", "Oversize", "120 BYN", "hudi-saved"],
+          ["#2c2c2c", "Худи Born Again Christian Dior", "Oversize", "120 BYN", "hudi-born-again"],
+          ["#2c2c2c", "Худи Jesus King", "Oversize", "120 BYN", "hudi-jesus-king"],
+          ["#2c2c2c", "Футболка Church isn’t complete without u", "Oversize", "75 BYN", "church"],
+          ["#2c2c2c", "Футболка He loved first", "Oversize", "80 BYN", "he-loved-first"],
+          ["#2c2c2c", "Футболка Even heroes need Jesus", "Oversize", "80 BYN", "even-heroes"],
+          ["#2c2c2c", "Футболка Yall need Jesus", "Oversize", "80 BYN", "yall-need-jesus"],
+          ["#2c2c2c", "Футболка My world revolves around the SON", "Oversize", "80 BYN", "my-world"],
+          ["#f3efe8", "Футболка Dude, He said we are going fishing", "Oversize", "75 BYN", "fishing"],
+          ["#f3efe8", "Футболка Jesus", "Oversize", "75 BYN", "jesus"],
+          ["#f3efe8", "Футболка I Love Jesus", "Oversize", "80 BYN", "i-love-jesus"],
+          ["#f3efe8", "Футболка Jesus is my jam", "Oversize", "80 BYN", "jam"],
+          ["#2c2c2c", "Футболка Give Me Jesus", "Oversize", "75 BYN", "give-me-jesus"],
+          ["#2c2c2c", "Футболка He is Rizzin", "Oversize", "85 BYN", "rizzin"],
+          ["#2c2c2c", "Футболка Faith Over Fear", "Oversize", "80 BYN", "faith-over-fear"],
+          ["#2c2c2c", "Худи Love Like Jesus", "Oversize", "110 BYN", "hudi-love"],
+          ["#2c2c2c", "Футболка Catch Up With Jesus", "Oversize", "85 BYN", "catch-up"],
+          ["#2c2c2c", "Футболка Jesus Loves Gamers", "Oversize", "85 BYN", "gamers"],
+          ["#2c2c2c", "Футболка Grace Grace", "Oversize", "80 BYN", "grace-grace"],
+          ["#2c2c2c", "Футболка Faith Can Move Mountains", "Oversize", "75 BYN", "mountains"],
+          ["#2c2c2c", "Футболка Made For More", "Oversize", "80 BYN", "made-for-more"]
         ]
       },
       art: {
@@ -459,8 +490,9 @@
         document.getElementById("title").textContent = data.title;
         document.getElementById("blurb").textContent = data.blurb;
         document.getElementById("note").textContent = data.note;
+        const source = data.source ? `<span>Источник: ${data.source}</span>` : "";
         items.innerHTML = data.items.map(([color, name, size, price, slug]) =>
-          `<a class="item" href="?${id}/${slug}" data-slug="${slug}" style="--swatch:${color};background-image:linear-gradient(${color},${color})"><div class="cloth" style="--swatch:${color}"><span class="ph">Место под фото</span></div><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}</span></a>`
+          `<a class="item" href="?${id}/${slug}" data-slug="${slug}" style="--swatch:${color};background-image:linear-gradient(${color},${color})"><div class="cloth" style="--swatch:${color}"><span class="ph">Место под фото</span></div><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}${source}</span></a>`
         ).join("");
         home.classList.remove("on");
         product.classList.remove("on");
@@ -492,6 +524,9 @@
         const priceEl = document.getElementById("product-price");
         priceEl.hidden = !price;
         priceEl.textContent = price;
+        const sourceEl = document.getElementById("product-source");
+        sourceEl.hidden = !data.source;
+        sourceEl.innerHTML = data.source ? `Источник: <a href="${data.sourceHref}">${data.source}</a>` : "";
         document.getElementById("choice").textContent = options.length
           ? `Выберите размер. ${orderLater}`
           : orderLater;
