@@ -147,15 +147,26 @@
     .sizes p { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
     .sizes div { display: flex; flex-wrap: wrap; gap: 8px; }
     .size {
-      min-width: 44px;
-      padding: 8px 12px;
+      width: 52px;
+      height: 40px;
+      padding: 0;
       border: 1px solid var(--line);
       background: var(--paper);
       text-align: center;
       cursor: pointer;
+      font-size: 13px;
     }
     .size.on { background: var(--ink); color: #fff; border-color: var(--ink); }
     .product-price { margin: 16px 0 0; font-size: 18px; }
+    .buy {
+      display: inline-block;
+      margin-top: 22px;
+      background: var(--accent);
+      color: #fff;
+      padding: 12px 18px;
+      font-size: 15px;
+      cursor: default;
+    }
     @media (max-width: 800px) {
       h1 { font-size: 28px; }
       .items, .product { grid-template-columns: 1fr; }
@@ -267,6 +278,7 @@
             <div id="size-options"></div>
           </div>
           <p class="product-price" id="product-price" hidden></p>
+          <button type="button" class="buy">Заказать</button>
           <p class="order" id="choice">Оформление заказа ещё не включено.</p>
         </div>
       </article>
@@ -375,10 +387,17 @@
       else update();
     }
 
+    const sizeScale = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"];
     const orderLater = "Оформление заказа на сайте ещё не включено.";
 
     function listedSizes(size) {
-      if (!size || size.includes("–")) return [];
+      if (!size) return [];
+      const range = size.split("–");
+      if (range.length === 2) {
+        const from = sizeScale.indexOf(range[0].trim());
+        const to = sizeScale.indexOf(range[1].trim());
+        if (from !== -1 && to >= from) return sizeScale.slice(from, to + 1);
+      }
       const parts = size.split(",").map((part) => part.trim()).filter(Boolean);
       return parts.length > 1 ? parts : [];
     }
