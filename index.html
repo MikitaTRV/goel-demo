@@ -113,7 +113,8 @@
     .brand-head h1 { font-size: 32px; letter-spacing: -0.03em; line-height: 1.2; margin: 0; }
     .brand-head .blurb { margin: 12px 0 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
     .items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 28px 0 40px; }
-    .item { background: var(--paper); border: 1px solid var(--line); display: flex; flex-direction: column; }
+    .item { background: var(--paper); border: 1px solid var(--line); display: flex; flex-direction: column; cursor: pointer; text-align: left; }
+    .item:hover { border-color: #cfc6bb; }
     .cloth { height: 230px; flex: none; }
     .item .body { padding: 16px 16px 18px; }
     .item b { display: block; font-size: 16px; line-height: 1.4; }
@@ -129,9 +130,17 @@
       cursor: default;
     }
     .order { border-top: 1px solid var(--line); padding: 22px 0 64px; color: var(--muted); font-size: 15px; line-height: 1.55; }
+    .product { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
+    .product-cloth { height: 460px; }
+    .product-copy h1 { margin: 0; }
+    .product-size { margin: 12px 0 0; color: var(--muted); }
+    .product-price { margin: 14px 0 0; font-size: 18px; }
+    .product .buy { margin-top: 24px; }
+    .product .order { border: 0; padding: 16px 0 0; }
     @media (max-width: 800px) {
       h1 { font-size: 28px; }
-      .items { grid-template-columns: 1fr; }
+      .items, .product { grid-template-columns: 1fr; }
+      .product-cloth { height: 280px; }
       header { gap: 16px; }
     }
   </style>
@@ -217,6 +226,28 @@
       <div class="items" id="items"></div>
       <div class="order">Чтобы заказать, нажмите «Заказать».</div>
     </section>
+
+    <section id="product" class="view">
+      <div class="crumbs">
+        <button type="button" id="product-all">Все бренды</button>
+        <span>›</span>
+        <button type="button" id="product-country"></button>
+        <span>›</span>
+        <button type="button" id="product-brand"></button>
+        <span>›</span>
+        <span class="here" id="product-crumb"></span>
+      </div>
+      <article class="product">
+        <div class="product-cloth" id="product-cloth"></div>
+        <div class="product-copy">
+          <h1 id="product-title"></h1>
+          <p class="product-size" id="product-size" hidden></p>
+          <p class="product-price" id="product-price" hidden></p>
+          <button type="button" class="buy">Заказать</button>
+          <p class="order">Чтобы заказать, нажмите «Заказать».</p>
+        </div>
+      </article>
+    </section>
     </div>
   </div>
   <script>
@@ -282,7 +313,9 @@
 
     const home = document.getElementById("home");
     const brand = document.getElementById("brand");
+    const product = document.getElementById("product");
     const items = document.getElementById("items");
+    let currentBrand = null;
     const stage = document.getElementById("stage");
     const menuBtn = document.getElementById("countries-btn");
     const menuList = document.getElementById("country-menu");
@@ -297,6 +330,7 @@
 
     function showHome() {
       brand.classList.remove("on");
+      product.classList.remove("on");
       home.classList.add("on");
     }
 
@@ -319,6 +353,7 @@
 
     function openBrand(id) {
       const data = brands[id];
+      currentBrand = id;
       document.getElementById("crumb-country").textContent = data.country;
       document.getElementById("crumb-country").dataset.country = data.country;
       document.getElementById("crumb-brand").textContent = data.title;
@@ -326,11 +361,35 @@
       document.getElementById("blurb").textContent = data.blurb;
       closeMenu();
       move(() => {
-        items.innerHTML = data.items.map(([color, name, size, price]) =>
-          `<article class="item"><div class="cloth" style="background:${color}"></div><div class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}<button type="button" class="buy">Заказать</button></div></article>`
+        items.innerHTML = data.items.map(([color, name, size, price], index) =>
+          `<article class="item" data-item="${index}"><div class="cloth" style="background:${color}"></div><div class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}<button type="button" class="buy">Заказать</button></div></article>`
         ).join("");
         home.classList.remove("on");
+        product.classList.remove("on");
         brand.classList.add("on");
+      });
+    }
+
+    function openProduct(index) {
+      const data = brands[currentBrand];
+      const [color, name, size, price] = data.items[index];
+      document.getElementById("product-country").textContent = data.country;
+      document.getElementById("product-country").dataset.country = data.country;
+      document.getElementById("product-brand").textContent = data.title;
+      document.getElementById("product-crumb").textContent = name;
+      document.getElementById("product-title").textContent = name;
+      document.getElementById("product-cloth").style.background = color;
+      const sizeEl = document.getElementById("product-size");
+      const priceEl = document.getElementById("product-price");
+      sizeEl.hidden = !size;
+      sizeEl.textContent = size;
+      priceEl.hidden = !price;
+      priceEl.textContent = price;
+      closeMenu();
+      move(() => {
+        home.classList.remove("on");
+        brand.classList.remove("on");
+        product.classList.add("on");
       });
     }
 
@@ -355,6 +414,16 @@
     document.querySelectorAll("[data-brand]").forEach((button) => {
       button.addEventListener("click", () => openBrand(button.dataset.brand));
     });
+    items.addEventListener("click", (event) => {
+      if (event.target.closest(".buy")) return;
+      const card = event.target.closest("[data-item]");
+      if (card) openProduct(Number(card.dataset.item));
+    });
+    document.getElementById("product-all").addEventListener("click", () => setCountry("all"));
+    document.getElementById("product-country").addEventListener("click", () => {
+      setCountry(document.getElementById("product-country").dataset.country);
+    });
+    document.getElementById("product-brand").addEventListener("click", () => openBrand(currentBrand));
   </script>
 </body>
 </html>
