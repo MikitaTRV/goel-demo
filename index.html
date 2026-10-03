@@ -96,6 +96,7 @@
     .brand b { display: block; font-size: 17px; line-height: 1.35; }
     .brand small { display: block; margin-top: 5px; color: var(--muted); font-size: 14px; line-height: 1.45; }
     .go { color: var(--accent); font-size: 14px; padding-right: 4px; }
+    .brand.wait .go { color: var(--muted); }
     .view { display: none; }
     .view.on { display: block; padding-bottom: 48px; }
     #stage.enter { animation: enter 0.32s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -115,7 +116,7 @@
     .items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 28px 0 40px; }
     .item { background: var(--paper); border: 1px solid var(--line); display: flex; flex-direction: column; cursor: pointer; text-align: left; }
     .item:hover { border-color: #cfc6bb; }
-    .cloth { height: 230px; flex: none; position: relative; }
+    .cloth { height: 230px; flex: none; position: relative; outline: 1px solid #cfc6bb; outline-offset: -1px; }
     .cloth > .ph, .product-cloth > .ph {
       position: absolute;
       left: 12px;
@@ -133,20 +134,11 @@
     .item b { display: block; font-size: 16px; line-height: 1.4; }
     .item span { display: block; color: var(--muted); font-size: 14px; line-height: 1.45; margin-top: 6px; }
     .item .price { color: var(--ink); margin-top: 10px; line-height: 1.4; }
-    .buy {
-      display: inline-block;
-      margin-top: 22px;
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--line);
-      padding: 8px 14px;
-      font-size: 14px;
-      cursor: default;
-    }
-    .stock { margin: 22px 0 4px; font-size: 15px; line-height: 1.5; }
-    .order { border-top: 1px solid var(--line); padding: 22px 0 64px; color: var(--muted); font-size: 15px; line-height: 1.55; }
+    .stock { margin: 22px 0 0; font-size: 15px; line-height: 1.5; }
+    .ahead { margin: 8px 0 0; font-size: 15px; line-height: 1.5; }
+    .order { margin: 16px 0 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
     .product { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
-    .product-cloth { height: 460px; position: relative; }
+    .product-cloth { height: 460px; position: relative; outline: 1px solid #cfc6bb; outline-offset: -1px; }
     .size-range { margin: 12px 0 0; color: var(--muted); }
     .size-range[hidden] { display: none; }
     .product-copy h1 { margin: 0; }
@@ -164,8 +156,6 @@
     }
     .size.on { background: var(--ink); color: #fff; border-color: var(--ink); }
     .product-price { margin: 16px 0 0; font-size: 18px; }
-    .product .buy { margin-top: 24px; }
-    .product .order { border: 0; padding: 16px 0 0; }
     @media (max-width: 800px) {
       h1 { font-size: 28px; }
       .items, .product { grid-template-columns: 1fr; }
@@ -214,20 +204,20 @@
           <span><b>sote_m</b><small>Футболки и худи</small></span>
           <span class="go">Смотреть</span>
         </button>
-        <button class="brand" data-brand="fami">
+        <button class="brand wait" data-brand="fami">
           <span class="swatch" style="background:#f4f1ea"></span>
-          <span><b>fami.ly.by</b><small>Одежда для всей семьи</small></span>
-          <span class="go">Смотреть</span>
+          <span><b>fami.ly.by</b><small>Ассортимент ещё не собран</small></span>
+          <span class="go">Открыть</span>
         </button>
-        <button class="brand" data-brand="poputi">
+        <button class="brand wait" data-brand="poputi">
           <span class="swatch" style="background:#c9b59a"></span>
-          <span><b>Poputi_store</b><small>Христианская одежда</small></span>
-          <span class="go">Смотреть</span>
+          <span><b>Poputi_store</b><small>Ассортимент ещё не собран</small></span>
+          <span class="go">Открыть</span>
         </button>
-        <button class="brand" data-brand="sola">
+        <button class="brand wait" data-brand="sola">
           <span class="swatch" style="background:#f3efe8"></span>
-          <span><b>sola_minsk</b><small>Футболки и худи</small></span>
-          <span class="go">Смотреть</span>
+          <span><b>sola_minsk</b><small>Названы только цены</small></span>
+          <span class="go">Открыть</span>
         </button>
       </div>
       <div data-country-group="Россия">
@@ -253,8 +243,8 @@
         <p class="blurb" id="blurb"></p>
       </div>
       <p class="stock" id="note"></p>
+      <p class="ahead">Вещь выбираете здесь. Оформление заказа на сайте ещё не включено.</p>
       <div class="items" id="items"></div>
-      <div class="order">Вещь выбираете здесь. Оформление заказа на сайте ещё не включено.</div>
     </section>
 
     <section id="product" class="view">
@@ -277,7 +267,6 @@
             <div id="size-options"></div>
           </div>
           <p class="product-price" id="product-price" hidden></p>
-          <button type="button" class="buy">Заказать</button>
           <p class="order" id="choice">Оформление заказа ещё не включено.</p>
         </div>
       </article>
@@ -386,18 +375,17 @@
       else update();
     }
 
-    const sizeScale = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"];
     const orderLater = "Оформление заказа на сайте ещё не включено.";
 
     function listedSizes(size) {
-      if (!size) return [];
-      const range = size.split("–");
-      if (range.length === 2) {
-        const from = sizeScale.indexOf(range[0].trim());
-        const to = sizeScale.indexOf(range[1].trim());
-        if (from !== -1 && to >= from) return sizeScale.slice(from, to + 1);
-      }
-      return size.split(",").map((part) => part.trim()).filter(Boolean);
+      if (!size || size.includes("–")) return [];
+      const parts = size.split(",").map((part) => part.trim()).filter(Boolean);
+      return parts.length > 1 ? parts : [];
+    }
+
+    function rangeLabel(size) {
+      if (!size) return "";
+      return size.includes("–") ? `Размеры ${size}` : `Размер ${size}`;
     }
 
     function writeChoice(size) {
@@ -450,8 +438,8 @@
         const options = listedSizes(size);
         const range = document.getElementById("size-range");
         const sizes = document.getElementById("product-sizes");
-        range.hidden = !size || options.length > 0;
-        range.textContent = size && options.length === 0 ? `Размеры ${size}` : "";
+        range.hidden = options.length > 0 || !size;
+        range.textContent = options.length || !size ? "" : rangeLabel(size);
         sizes.hidden = options.length === 0;
         document.getElementById("size-options").innerHTML = options.map((option) =>
           `<button type="button" class="size">${option}</button>`
