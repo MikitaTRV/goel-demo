@@ -133,8 +133,20 @@
     .product { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
     .product-cloth { height: 460px; }
     .product-copy h1 { margin: 0; }
-    .product-size { margin: 12px 0 0; color: var(--muted); }
-    .product-price { margin: 14px 0 0; font-size: 18px; }
+    .sizes { margin-top: 18px; }
+    .sizes[hidden] { display: none; }
+    .sizes p { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
+    .sizes div { display: flex; flex-wrap: wrap; gap: 8px; }
+    .size {
+      min-width: 44px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      text-align: center;
+      cursor: pointer;
+    }
+    .size.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .product-price { margin: 16px 0 0; font-size: 18px; }
     .product .buy { margin-top: 24px; }
     .product .order { border: 0; padding: 16px 0 0; }
     @media (max-width: 800px) {
@@ -241,7 +253,10 @@
         <div class="product-cloth" id="product-cloth"></div>
         <div class="product-copy">
           <h1 id="product-title"></h1>
-          <p class="product-size" id="product-size" hidden></p>
+          <div class="sizes" id="product-sizes" hidden>
+            <p>Размер</p>
+            <div id="size-options"></div>
+          </div>
           <p class="product-price" id="product-price" hidden></p>
           <button type="button" class="buy">Заказать</button>
           <p class="order">Чтобы заказать, нажмите «Заказать».</p>
@@ -370,6 +385,19 @@
       });
     }
 
+    const sizeScale = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"];
+
+    function sizeOptions(size) {
+      if (!size) return [];
+      const range = size.split("–");
+      if (range.length === 2) {
+        const from = sizeScale.indexOf(range[0].trim());
+        const to = sizeScale.indexOf(range[1].trim());
+        if (from !== -1 && to >= from) return sizeScale.slice(from, to + 1);
+      }
+      return size.split(",").map((part) => part.trim()).filter(Boolean);
+    }
+
     function openProduct(index) {
       const data = brands[currentBrand];
       const [color, name, size, price] = data.items[index];
@@ -379,10 +407,13 @@
       document.getElementById("product-crumb").textContent = name;
       document.getElementById("product-title").textContent = name;
       document.getElementById("product-cloth").style.background = color;
-      const sizeEl = document.getElementById("product-size");
+      const options = sizeOptions(size);
+      const sizes = document.getElementById("product-sizes");
+      sizes.hidden = options.length === 0;
+      document.getElementById("size-options").innerHTML = options.map((option) =>
+        `<button type="button" class="size">${option}</button>`
+      ).join("");
       const priceEl = document.getElementById("product-price");
-      sizeEl.hidden = !size;
-      sizeEl.textContent = size;
       priceEl.hidden = !price;
       priceEl.textContent = price;
       closeMenu();
@@ -424,6 +455,11 @@
       setCountry(document.getElementById("product-country").dataset.country);
     });
     document.getElementById("product-brand").addEventListener("click", () => openBrand(currentBrand));
+    document.getElementById("size-options").addEventListener("click", (event) => {
+      const button = event.target.closest(".size");
+      if (!button) return;
+      document.querySelectorAll(".size").forEach((item) => item.classList.toggle("on", item === button));
+    });
   </script>
 </body>
 </html>
