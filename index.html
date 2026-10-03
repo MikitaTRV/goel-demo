@@ -117,9 +117,30 @@
     .brand-head h1 { font-size: 32px; letter-spacing: -0.03em; line-height: 1.2; margin: 0; }
     .brand-head .blurb { margin: 12px 0 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
     .items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 28px 0 40px; }
-    .item { background: var(--paper); border: 1px solid var(--line); display: flex; flex-direction: column; cursor: pointer; text-align: left; }
+    .item {
+      background-color: var(--paper);
+      background-image: linear-gradient(var(--swatch), var(--swatch));
+      background-repeat: no-repeat;
+      background-size: 100% 230px;
+      background-position: top left;
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      text-decoration: none;
+    }
     .item:hover { border-color: #cfc6bb; }
-    .cloth { height: 230px; flex: none; position: relative; outline: 1px solid #cfc6bb; outline-offset: -1px; }
+    .cloth {
+      height: 230px;
+      flex: none;
+      position: relative;
+      outline: 1px solid #cfc6bb;
+      outline-offset: -1px;
+      background-color: var(--swatch);
+      box-shadow: inset 0 0 0 230px var(--swatch);
+    }
     .cloth > .ph, .product-cloth > .ph {
       position: absolute;
       left: 12px;
@@ -439,7 +460,7 @@
         document.getElementById("blurb").textContent = data.blurb;
         document.getElementById("note").textContent = data.note;
         items.innerHTML = data.items.map(([color, name, size, price, slug]) =>
-          `<a class="item" href="#${id}/${slug}" data-slug="${slug}"><div class="cloth" style="background-color:${color};background-image:linear-gradient(${color},${color})"><span class="ph">Место под фото</span></div><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}</span></a>`
+          `<a class="item" href="#${id}/${slug}" data-slug="${slug}" style="--swatch:${color};background-image:linear-gradient(${color},${color})"><div class="cloth" style="--swatch:${color}"><span class="ph">Место под фото</span></div><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}</span></a>`
         ).join("");
         home.classList.remove("on");
         product.classList.remove("on");
