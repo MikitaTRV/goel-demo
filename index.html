@@ -140,6 +140,13 @@
       outline-offset: -1px;
       background-color: var(--swatch);
       box-shadow: inset 0 0 0 230px var(--swatch);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .cloth.has-photo, .product-cloth.has-photo {
+      box-shadow: none;
+      background-color: #ddd6cc;
     }
     .cloth > .ph, .product-cloth > .ph {
       position: absolute;
@@ -153,6 +160,7 @@
       line-height: 1.3;
       padding: 4px 8px;
     }
+    .cloth.has-photo > .ph, .product-cloth.has-photo > .ph { display: none; }
     .item { width: 100%; }
     .item .body { padding: 16px 16px 18px; }
     .item b { display: block; font-size: 16px; line-height: 1.4; }
@@ -162,7 +170,15 @@
     .ahead { margin: 8px 0 0; font-size: 15px; line-height: 1.5; }
     .order { margin: 16px 0 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
     .product { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
-    .product-cloth { height: 460px; position: relative; outline: 1px solid #cfc6bb; outline-offset: -1px; }
+    .product-cloth {
+      height: 460px;
+      position: relative;
+      outline: 1px solid #cfc6bb;
+      outline-offset: -1px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
     .size-range { margin: 12px 0 0; color: var(--muted); }
     .size-range[hidden] { display: none; }
     .product-copy h1 { margin: 0; }
@@ -321,11 +337,34 @@
         country: "Беларусь",
         title: "godderob",
         blurb: "Свитшоты, футболки и полузипы",
-        note: "Показаны не все вещи.",
+        note: "Названия, размеры и цены с канала t.me/godderob. У бордового NAME цена в посте не названа.",
         items: [
-          ["#efe8dc", "Свитшот CHILD OF GOD", "S, M, L", "154 BYN", "child-of-god"],
-          ["#161616", "Свитшот ONLY JESUS", "S, M, L, XL", "160 BYN", "only-jesus"],
-          ["#6f8f62", "Полузип JESUS LOVERS CLUB", "S, M, L, XL", "184 BYN", "jesus-lovers-club"]
+          ["#efe8dc", "Свитшот CHILD OF GOD", "S, M, L", "154 BYN", "child-of-god", "img/godderob/child-of-god.jpg"],
+          ["#4a3428", "Свитшот JESUS IS LORD", "S, L", "154 BYN", "jesus-is-lord-chocolate", "img/godderob/jesus-is-lord-chocolate.jpg"],
+          ["#c4a35a", "Свитшот JESUS IS LORD", "S, M, L", "134 BYN", "jesus-is-lord-mustard", "img/godderob/jesus-is-lord-mustard.jpg"],
+          ["#161616", "Свитшот ONLY JESUS", "S, M, L, XL", "160 BYN", "only-jesus-black", "img/godderob/only-jesus-black.jpg"],
+          ["#6f8f62", "Свитшот ONLY JESUS", "L, XL", "154 BYN", "only-jesus-grass", "img/godderob/only-jesus-grass.jpg"],
+          ["#6f8f62", "Свитшот LOVE, BUT DO IT LIKE JESUS", "XS, S, M, L", "144 BYN", "love-like-jesus", "img/godderob/love-like-jesus.jpg"],
+          ["#e8b4c0", "Свитшот BOZHIY ODUVANCHIK", "XS, S, M, L", "154 BYN", "oduvanchik-pink", "img/godderob/oduvanchik-pink.jpg"],
+          ["#c9d6e0", "Свитшот BOZHIY ODUVANCHIK", "S, M, L", "154 BYN", "oduvanchik-sky", "img/godderob/oduvanchik-sky.jpg"],
+          ["#5c4033", "Свитшот JESUS IS MY SHEPHERD", "", "179 BYN", "shepherd-coffee", "img/godderob/shepherd-coffee.jpg"],
+          ["#2f4f3e", "Свитшот JESUS IS MY SHEPHERD", "", "179 BYN", "shepherd-emerald", "img/godderob/shepherd-emerald.jpg"],
+          ["#6f8f62", "Полузип JESUS LOVERS CLUB", "S, M, L, XL", "184 BYN", "jlc-grass", "img/godderob/jlc-grass.jpg"],
+          ["#d8c3a5", "Полузип JESUS LOVERS CLUB", "M, L, XL", "184 BYN", "jlc-beige", "img/godderob/jlc-beige.jpg"],
+          ["#b33a3a", "Полузип JESUS LOVERS CLUB", "S, M, L, XL", "184 BYN", "jlc-red", "img/godderob/jlc-red.jpg"],
+          ["#a8c4d4", "Полузип JESUS LOVERS CLUB", "S", "184 BYN", "jlc-sky", "img/godderob/jlc-sky.jpg"],
+          ["#1e3a5f", "Полузип JESUS LOVERS CLUB", "XS, S, M, L, XL", "184 BYN", "jlc-blue", "img/godderob/jlc-blue.jpg"],
+          ["#2f4f86", "Лонгслив PRAISE THE LORD", "S, L", "125 BYN", "praise-long-blue", "img/godderob/praise-long-blue.jpg"],
+          ["#161616", "Лонгслив PRAISE THE LORD", "S, M, XL, 2XL", "120 BYN", "praise-long-black", "img/godderob/praise-long-black.jpg"],
+          ["#1c2a4a", "Лонгслив BY JESUS", "M", "130 BYN", "by-jesus", "img/godderob/by-jesus.jpg"],
+          ["#161616", "Лонгслив WINS", "L, 2XL", "115 BYN", "wins", "img/godderob/wins.jpg"],
+          ["#f3efe8", "Футболка БОГ ЕСТЬ ЛЮБОВЬ", "XS, S, M, L, XL, 2XL", "135 BYN", "bog-est-lubov-milk", "img/godderob/bog-est-lubov-milk.jpg"],
+          ["#e8b4c0", "Футболка БОГ ЕСТЬ ЛЮБОВЬ", "XS, M", "135 BYN", "bog-est-lubov-pink", "img/godderob/bog-est-lubov-pink.jpg"],
+          ["#f7f4ee", "Футболка JESUS HEALED MY HEART", "M, L, 2XL", "135 BYN", "jesus-healed", "img/godderob/jesus-healed.jpg"],
+          ["#4a4a4a", "Футболка NAME", "S, M, L, XL", "135 BYN", "name-graphite", "img/godderob/name-graphite.jpg"],
+          ["#6b2b3a", "Футболка NAME", "S, M, L, XL, 2XL", "", "name-burgundy", "img/godderob/name-burgundy.jpg"],
+          ["#6b2b3a", "Футболка SAVED", "S, M, L, XL, 2XL", "100 BYN", "saved", "img/godderob/saved.jpg"],
+          ["#161616", "Футболка PRAISE THE LORD", "XL, 2XL", "105 BYN", "praise-tee-black", "img/godderob/praise-tee-black.jpg"]
         ]
       },
       sote: {
@@ -453,7 +492,10 @@
         const to = sizeScale.indexOf(range[1].trim());
         if (from !== -1 && to >= from) return sizeScale.slice(from, to + 1);
       }
-      const parts = size.split(",").map((part) => part.trim()).filter(Boolean);
+      const parts = size.split(",").map((part) => {
+        const token = part.trim().replace(/^XXL$/i, "2XL");
+        return token;
+      }).filter(Boolean);
       return parts.length > 1 ? parts : [];
     }
 
@@ -491,9 +533,16 @@
         document.getElementById("blurb").textContent = data.blurb;
         document.getElementById("note").textContent = data.note;
         const source = data.source ? `<span>Источник: ${data.source}</span>` : "";
-        items.innerHTML = data.items.map(([color, name, size, price, slug]) =>
-          `<a class="item" href="?${id}/${slug}" data-slug="${slug}" style="--swatch:${color};background-image:linear-gradient(${color},${color})"><div class="cloth" style="--swatch:${color}"><span class="ph">Место под фото</span></div><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}${source}</span></a>`
-        ).join("");
+        items.innerHTML = data.items.map(([color, name, size, price, slug, photo]) => {
+          const clothStyle = photo
+            ? `--swatch:${color};background-image:url('${photo}')`
+            : `--swatch:${color}`;
+          const cardStyle = photo
+            ? `--swatch:${color}`
+            : `--swatch:${color};background-image:linear-gradient(${color},${color})`;
+          const photoClass = photo ? " has-photo" : "";
+          return `<a class="item" href="?${id}/${slug}" data-slug="${slug}" style="${cardStyle}"><div class="cloth${photoClass}" style="${clothStyle}"><span class="ph">Место под фото</span></div><span class="body"><b>${name}</b>${size ? `<span>${size}</span>` : ""}${price ? `<span class="price">${price}</span>` : ""}${source}</span></a>`;
+        }).join("");
         home.classList.remove("on");
         product.classList.remove("on");
         brand.classList.add("on");
@@ -502,7 +551,7 @@
 
     function paintProduct(id, index, animate) {
       const data = brands[id];
-      const [color, name, size, price] = data.items[index];
+      const [color, name, size, price, , photo] = data.items[index];
       currentBrand = id;
       reveal(() => {
         document.getElementById("product-country").textContent = data.country;
@@ -510,8 +559,9 @@
         document.getElementById("product-crumb").textContent = name;
         document.getElementById("product-title").textContent = name;
         const cloth = document.getElementById("product-cloth");
+        cloth.classList.toggle("has-photo", !!photo);
         cloth.style.backgroundColor = color;
-        cloth.style.backgroundImage = `linear-gradient(${color},${color})`;
+        cloth.style.backgroundImage = photo ? `url('${photo}')` : `linear-gradient(${color},${color})`;
         const options = listedSizes(size);
         const range = document.getElementById("size-range");
         const sizes = document.getElementById("product-sizes");
