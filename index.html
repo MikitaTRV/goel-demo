@@ -337,7 +337,7 @@
         country: "Беларусь",
         title: "godderob",
         blurb: "Свитшоты, футболки и полузипы",
-        note: "Названия, размеры и цены с канала t.me/godderob. У бордового NAME цена в посте не названа.",
+        note: "",
         items: [
           ["#efe8dc", "Свитшот CHILD OF GOD", "S, M, L", "154 BYN", "child-of-god", "img/godderob/child-of-god.jpg"],
           ["#4a3428", "Свитшот JESUS IS LORD", "S, L", "154 BYN", "jesus-is-lord-chocolate", "img/godderob/jesus-is-lord-chocolate.jpg"],
@@ -531,7 +531,9 @@
         document.getElementById("crumb-brand").textContent = data.title;
         document.getElementById("title").textContent = data.title;
         document.getElementById("blurb").textContent = data.blurb;
-        document.getElementById("note").textContent = data.note;
+        const note = document.getElementById("note");
+        note.textContent = data.note || "";
+        note.hidden = !data.note;
         const source = data.source ? `<span>Источник: ${data.source}</span>` : "";
         items.innerHTML = data.items.map(([color, name, size, price, slug, photo]) => {
           const clothStyle = photo
