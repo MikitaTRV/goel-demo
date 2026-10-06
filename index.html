@@ -136,7 +136,7 @@
       background-color: var(--paper);
       background-image: linear-gradient(var(--swatch), var(--swatch));
       background-repeat: no-repeat;
-      background-size: 100% 230px;
+      background-size: 100% 280px;
       background-position: top left;
       border: 1px solid var(--line);
       display: flex;
@@ -148,20 +148,26 @@
     }
     .item:hover { border-color: #cfc6bb; }
     .cloth {
-      height: 230px;
+      height: 280px;
       flex: none;
       position: relative;
       outline: 1px solid #cfc6bb;
       outline-offset: -1px;
       background-color: var(--swatch);
-      box-shadow: inset 0 0 0 230px var(--swatch);
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      box-shadow: inset 0 0 0 280px var(--swatch);
+      overflow: hidden;
     }
     .cloth.has-photo, .product-cloth.has-photo {
       box-shadow: none;
-      background-color: #ddd6cc;
+      background-color: #ebe4da;
+      background-image: none;
+    }
+    .cloth > img, .product-cloth > img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
     }
     .cloth > .ph, .product-cloth > .ph {
       position: absolute;
@@ -187,13 +193,12 @@
     .order { margin: 16px 0 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
     .product { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
     .product-cloth {
-      height: 460px;
+      height: min(72vh, 640px);
       position: relative;
       outline: 1px solid #cfc6bb;
       outline-offset: -1px;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      background-color: var(--swatch, #ebe4da);
+      overflow: hidden;
     }
     .size-range { margin: 12px 0 0; color: var(--muted); }
     .size-range[hidden] { display: none; }
@@ -328,7 +333,7 @@
         <span class="here" id="product-crumb"></span>
       </div>
       <article class="product">
-        <div class="product-cloth" id="product-cloth"><span class="ph">Место под фото</span></div>
+        <div class="product-cloth" id="product-cloth"><img id="product-photo" alt="" hidden><span class="ph">Место под фото</span></div>
         <div class="product-copy">
           <h1 id="product-title"></h1>
           <div class="colors" id="product-colors" hidden>
@@ -370,8 +375,8 @@
             name: "Свитшот JESUS IS LORD",
             slug: "jesus-is-lord",
             variants: [
-              { tone: "шоколад", color: "#4a3428", size: "S, L", price: "154 BYN", photo: "img/godderob/jesus-is-lord-chocolate.jpg" },
-              { tone: "горчичный", color: "#c4a35a", size: "S, M, L", price: "134 BYN", photo: "img/godderob/jesus-is-lord-mustard.jpg" }
+              { tone: "шоколад", color: "#3a2c28", size: "S, L", price: "154 BYN", photo: "img/godderob/jesus-is-lord-chocolate.jpg" },
+              { tone: "горчичный", color: "#c9a227", size: "S, M, L", price: "134 BYN", photo: "img/godderob/jesus-is-lord-mustard.jpg" }
             ]
           },
           {
@@ -379,48 +384,48 @@
             slug: "only-jesus",
             variants: [
               { tone: "чёрный", color: "#161616", size: "S, M, L, XL", price: "160 BYN", photo: "img/godderob/only-jesus-black.jpg" },
-              { tone: "травяной", color: "#6f8f62", size: "L, XL", price: "154 BYN", photo: "img/godderob/only-jesus-grass.jpg" }
+              { tone: "травяной", color: "#6e6a3e", size: "L, XL", price: "154 BYN", photo: "img/godderob/only-jesus-grass.jpg" }
             ]
           },
           {
             name: "Свитшот LOVE, BUT DO IT LIKE JESUS",
             slug: "love-like-jesus",
             variants: [
-              { tone: "травяной", color: "#6f8f62", size: "XS, S, M, L", price: "144 BYN", photo: "img/godderob/love-like-jesus.jpg" }
+              { tone: "травяной", color: "#6e6a3e", size: "XS, S, M, L", price: "144 BYN", photo: "img/godderob/love-like-jesus.jpg" }
             ]
           },
           {
             name: "Свитшот BOZHIY ODUVANCHIK",
             slug: "oduvanchik",
             variants: [
-              { tone: "розовый", color: "#e8b4c0", size: "XS, S, M, L", price: "154 BYN", photo: "img/godderob/oduvanchik-pink.jpg" },
-              { tone: "небесный", color: "#c9d6e0", size: "S, M, L", price: "154 BYN", photo: "img/godderob/oduvanchik-sky.jpg" }
+              { tone: "розовый", color: "#f2c4ce", size: "XS, S, M, L", price: "154 BYN", photo: "img/godderob/oduvanchik-pink.jpg" },
+              { tone: "небесный", color: "#c5cdd6", size: "S, M, L", price: "154 BYN", photo: "img/godderob/oduvanchik-sky.jpg" }
             ]
           },
           {
             name: "Свитшот JESUS IS MY SHEPHERD",
             slug: "shepherd",
             variants: [
-              { tone: "кофе", color: "#5c4033", size: "", price: "179 BYN", photo: "img/godderob/shepherd-coffee.jpg" },
-              { tone: "изумруд", color: "#2f4f3e", size: "", price: "179 BYN", photo: "img/godderob/shepherd-emerald.jpg" }
+              { tone: "кофе", color: "#39302a", size: "", price: "179 BYN", photo: "img/godderob/shepherd-coffee.jpg" },
+              { tone: "изумруд", color: "#1f3d34", size: "", price: "179 BYN", photo: "img/godderob/shepherd-emerald.jpg" }
             ]
           },
           {
             name: "Полузип JESUS LOVERS CLUB",
             slug: "jesus-lovers-club",
             variants: [
-              { tone: "травяной", color: "#6f8f62", size: "S, M, L, XL", price: "184 BYN", photo: "img/godderob/jlc-grass.jpg" },
-              { tone: "бежевый", color: "#d8c3a5", size: "M, L, XL", price: "184 BYN", photo: "img/godderob/jlc-beige.jpg" },
-              { tone: "красный", color: "#b33a3a", size: "S, M, L, XL", price: "184 BYN", photo: "img/godderob/jlc-red.jpg" },
-              { tone: "небесный", color: "#a8c4d4", size: "S", price: "184 BYN", photo: "img/godderob/jlc-sky.jpg" },
-              { tone: "синий", color: "#1e3a5f", size: "XS, S, M, L, XL", price: "184 BYN", photo: "img/godderob/jlc-blue.jpg" }
+              { tone: "травяной", color: "#525224", size: "S, M, L, XL", price: "184 BYN", photo: "img/godderob/jlc-grass.jpg" },
+              { tone: "бежевый", color: "#d6c6b4", size: "M, L, XL", price: "184 BYN", photo: "img/godderob/jlc-beige.jpg" },
+              { tone: "красный", color: "#9a3538", size: "S, M, L, XL", price: "184 BYN", photo: "img/godderob/jlc-red.jpg" },
+              { tone: "небесный", color: "#b7c5d0", size: "S", price: "184 BYN", photo: "img/godderob/jlc-sky.jpg" },
+              { tone: "синий", color: "#1a2438", size: "XS, S, M, L, XL", price: "184 BYN", photo: "img/godderob/jlc-blue.jpg" }
             ]
           },
           {
             name: "Лонгслив PRAISE THE LORD",
             slug: "praise-long",
             variants: [
-              { tone: "синий", color: "#2f4f86", size: "S, L", price: "125 BYN", photo: "img/godderob/praise-long-blue.jpg" },
+              { tone: "синий", color: "#2a4570", size: "S, L", price: "125 BYN", photo: "img/godderob/praise-long-blue.jpg" },
               { tone: "чёрный", color: "#161616", size: "S, M, XL, 2XL", price: "120 BYN", photo: "img/godderob/praise-long-black.jpg" }
             ]
           },
@@ -428,7 +433,7 @@
             name: "Лонгслив BY JESUS",
             slug: "by-jesus",
             variants: [
-              { tone: "тёмно-синий", color: "#1c2a4a", size: "M", price: "130 BYN", photo: "img/godderob/by-jesus.jpg" }
+              { tone: "тёмно-синий", color: "#1a2740", size: "M", price: "130 BYN", photo: "img/godderob/by-jesus.jpg" }
             ]
           },
           {
@@ -443,7 +448,7 @@
             slug: "bog-est-lubov",
             variants: [
               { tone: "молочный", color: "#f3efe8", size: "XS, S, M, L, XL, 2XL", price: "135 BYN", photo: "img/godderob/bog-est-lubov-milk.jpg" },
-              { tone: "розовый", color: "#e8b4c0", size: "XS, M", price: "135 BYN", photo: "img/godderob/bog-est-lubov-pink.jpg" }
+              { tone: "розовый", color: "#f2c4ce", size: "XS, M", price: "135 BYN", photo: "img/godderob/bog-est-lubov-pink.jpg" }
             ]
           },
           {
@@ -457,15 +462,15 @@
             name: "Футболка NAME",
             slug: "name",
             variants: [
-              { tone: "графитовый", color: "#4a4a4a", size: "S, M, L, XL", price: "135 BYN", photo: "img/godderob/name-graphite.jpg" },
-              { tone: "бордовый", color: "#6b2b3a", size: "S, M, L, XL, 2XL", price: "", photo: "img/godderob/name-burgundy.jpg" }
+              { tone: "графитовый", color: "#4a474e", size: "S, M, L, XL", price: "135 BYN", photo: "img/godderob/name-graphite.jpg" },
+              { tone: "бордовый", color: "#6e3c41", size: "S, M, L, XL, 2XL", price: "", photo: "img/godderob/name-burgundy.jpg" }
             ]
           },
           {
             name: "Футболка SAVED",
             slug: "saved",
             variants: [
-              { tone: "бордовый", color: "#6b2b3a", size: "S, M, L, XL, 2XL", price: "100 BYN", photo: "img/godderob/saved.jpg" }
+              { tone: "бордовый", color: "#5c3038", size: "S, M, L, XL, 2XL", price: "100 BYN", photo: "img/godderob/saved.jpg" }
             ]
           },
           {
@@ -676,14 +681,15 @@
           const price = cardPrice(item);
           const photo = first.photo;
           const color = first.color;
-          const clothStyle = photo
-            ? `--swatch:${color};background-image:url('${photo}')`
-            : `--swatch:${color}`;
+          const clothStyle = `--swatch:${color}`;
           const cardStyle = photo
             ? `--swatch:${color}`
             : `--swatch:${color};background-image:linear-gradient(${color},${color})`;
           const photoClass = photo ? " has-photo" : "";
-          return `<a class="item" href="?${id}/${item.slug}" data-slug="${item.slug}" style="${cardStyle}"><div class="cloth${photoClass}" style="${clothStyle}"><span class="ph">Место под фото</span></div><span class="body"><b>${item.name}</b>${price ? `<span class="price">${price}</span>` : ""}${source}</span></a>`;
+          const photoTag = photo
+            ? `<img src="${photo}" alt="${item.name}" loading="lazy" decoding="async">`
+            : "";
+          return `<a class="item" href="?${id}/${item.slug}" data-slug="${item.slug}" style="${cardStyle}"><div class="cloth${photoClass}" style="${clothStyle}">${photoTag}<span class="ph">Место под фото</span></div><span class="body"><b>${item.name}</b>${price ? `<span class="price">${price}</span>` : ""}${source}</span></a>`;
         }).join("");
         home.classList.remove("on");
         product.classList.remove("on");
@@ -695,11 +701,19 @@
       const variant = item.variants[toneIndex] || item.variants[0];
       currentTone = item.variants.indexOf(variant);
       const cloth = document.getElementById("product-cloth");
+      const photoEl = document.getElementById("product-photo");
       cloth.classList.toggle("has-photo", !!variant.photo);
-      cloth.style.backgroundColor = variant.color;
-      cloth.style.backgroundImage = variant.photo
-        ? `url('${variant.photo}')`
-        : `linear-gradient(${variant.color},${variant.color})`;
+      cloth.style.backgroundColor = variant.photo ? "#ebe4da" : variant.color;
+      cloth.style.setProperty("--swatch", variant.color);
+      if (variant.photo) {
+        photoEl.hidden = false;
+        photoEl.src = variant.photo;
+        photoEl.alt = `${item.name}${variant.tone ? ", " + variant.tone : ""}`;
+      } else {
+        photoEl.hidden = true;
+        photoEl.removeAttribute("src");
+        photoEl.alt = "";
+      }
       const colors = document.getElementById("product-colors");
       const many = item.variants.length > 1;
       colors.hidden = !many;
