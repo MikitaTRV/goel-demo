@@ -200,6 +200,63 @@
       background-color: var(--swatch, #ebe4da);
       overflow: hidden;
     }
+    .product-cloth.has-photo {
+      cursor: zoom-in;
+    }
+    .product-cloth.has-photo::after {
+      content: "Нажмите, чтобы увеличить";
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      padding: 6px 10px;
+      background: rgba(28, 24, 20, 0.72);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.3;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .product-cloth.has-photo:hover::after,
+    .product-cloth.has-photo:focus-visible::after {
+      opacity: 1;
+    }
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(20, 16, 12, 0.88);
+      cursor: zoom-out;
+    }
+    .lightbox[hidden] { display: none; }
+    .lightbox img {
+      max-width: min(100%, 920px);
+      max-height: calc(100vh - 48px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      background: #ebe4da;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      cursor: default;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      border: 0;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.22); }
     .size-range { margin: 12px 0 0; color: var(--muted); }
     .size-range[hidden] { display: none; }
     .product-copy h1 { margin: 0; }
@@ -333,7 +390,7 @@
         <span class="here" id="product-crumb"></span>
       </div>
       <article class="product">
-        <div class="product-cloth" id="product-cloth"><img id="product-photo" alt="" hidden><span class="ph">Место под фото</span></div>
+        <div class="product-cloth" id="product-cloth" role="button" tabindex="-1" aria-label="Увеличить фото"><img id="product-photo" alt="" hidden><span class="ph">Место под фото</span></div>
         <div class="product-copy">
           <h1 id="product-title"></h1>
           <div class="colors" id="product-colors" hidden>
@@ -353,6 +410,10 @@
       </article>
     </section>
     </div>
+  </div>
+  <div class="lightbox" id="lightbox" hidden>
+    <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Закрыть">×</button>
+    <img id="lightbox-photo" alt="">
   </div>
   <script>
     const countryName = { belarus: "Беларусь", russia: "Россия" };
@@ -709,10 +770,12 @@
         photoEl.hidden = false;
         photoEl.src = variant.photo;
         photoEl.alt = `${item.name}${variant.tone ? ", " + variant.tone : ""}`;
+        cloth.tabIndex = 0;
       } else {
         photoEl.hidden = true;
         photoEl.removeAttribute("src");
         photoEl.alt = "";
+        cloth.tabIndex = -1;
       }
       const colors = document.getElementById("product-colors");
       const many = item.variants.length > 1;
@@ -846,6 +909,40 @@
       if (!button) return;
       document.querySelectorAll(".size").forEach((item) => item.classList.toggle("on", item === button));
       writeChoice(button.textContent);
+    });
+
+    const lightbox = document.getElementById("lightbox");
+    const lightboxPhoto = document.getElementById("lightbox-photo");
+    function openLightbox() {
+      const photoEl = document.getElementById("product-photo");
+      if (!photoEl || photoEl.hidden || !photoEl.src) return;
+      lightboxPhoto.src = photoEl.currentSrc || photoEl.src;
+      lightboxPhoto.alt = photoEl.alt || "";
+      lightbox.hidden = false;
+      document.body.style.overflow = "hidden";
+      document.getElementById("lightbox-close").focus();
+    }
+    function closeLightbox() {
+      if (lightbox.hidden) return;
+      lightbox.hidden = true;
+      lightboxPhoto.removeAttribute("src");
+      document.body.style.overflow = "";
+    }
+    document.getElementById("product-cloth").addEventListener("click", openLightbox);
+    document.getElementById("product-cloth").addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openLightbox();
+      }
+    });
+    document.getElementById("lightbox-close").addEventListener("click", (event) => {
+      event.stopPropagation();
+      closeLightbox();
+    });
+    lightbox.addEventListener("click", closeLightbox);
+    lightboxPhoto.addEventListener("click", (event) => event.stopPropagation());
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeLightbox();
     });
 
     apply(false);
