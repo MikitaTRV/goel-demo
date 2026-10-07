@@ -221,6 +221,72 @@
     .product-cloth.has-photo:focus-visible::after {
       opacity: 1;
     }
+    .product-cloth.has-gallery::after {
+      left: 56px;
+    }
+    .gallery-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      background: rgba(28, 24, 20, 0.55);
+      color: #fff;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .gallery-nav[hidden] { display: none; }
+    .gallery-nav.prev { left: 8px; }
+    .gallery-nav.next { right: 8px; }
+    .gallery-nav:hover { background: rgba(28, 24, 20, 0.75); }
+    .gallery-dots {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 12px;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .gallery-dots[hidden] { display: none; }
+    .gallery-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      box-shadow: 0 0 0 1px rgba(28,24,20,0.25);
+    }
+    .gallery-dots span.on { background: #fff; }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border: 0;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 28px;
+      cursor: pointer;
+    }
+    .lightbox-nav[hidden] { display: none; }
+    .lightbox-nav.prev { left: 16px; }
+    .lightbox-nav.next { right: 16px; }
+    .lightbox-nav:hover { background: rgba(255,255,255,0.22); }
+    .lightbox-count {
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+    }
+    .lightbox-count[hidden] { display: none; }
     .lightbox {
       position: fixed;
       inset: 0;
@@ -390,7 +456,13 @@
         <span class="here" id="product-crumb"></span>
       </div>
       <article class="product">
-        <div class="product-cloth" id="product-cloth" role="button" tabindex="-1" aria-label="Увеличить фото"><img id="product-photo" alt="" hidden><span class="ph">Место под фото</span></div>
+        <div class="product-cloth" id="product-cloth" role="button" tabindex="-1" aria-label="Увеличить фото">
+          <img id="product-photo" alt="" hidden>
+          <button type="button" class="gallery-nav prev" id="gallery-prev" hidden aria-label="Предыдущее фото">‹</button>
+          <button type="button" class="gallery-nav next" id="gallery-next" hidden aria-label="Следующее фото">›</button>
+          <div class="gallery-dots" id="gallery-dots" hidden></div>
+          <span class="ph">Место под фото</span>
+        </div>
         <div class="product-copy">
           <h1 id="product-title"></h1>
           <div class="colors" id="product-colors" hidden>
@@ -413,7 +485,10 @@
   </div>
   <div class="lightbox" id="lightbox" hidden>
     <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Закрыть">×</button>
+    <button type="button" class="lightbox-nav prev" id="lightbox-prev" hidden aria-label="Предыдущее фото">‹</button>
     <img id="lightbox-photo" alt="">
+    <button type="button" class="lightbox-nav next" id="lightbox-next" hidden aria-label="Следующее фото">›</button>
+    <div class="lightbox-count" id="lightbox-count" hidden></div>
   </div>
   <script>
     const countryName = { belarus: "Беларусь", russia: "Россия" };
@@ -553,35 +628,35 @@
             name: "Футболка ДОВЕРЯЙ БОГУ",
             slug: "doveryai-bogu",
             variants: [
-              { tone: "светлый", color: "#f3efe6", size: "XS–5XL", price: "75 BYN", photo: "img/sote/doveryai-bogu.jpg" }
+              { tone: "светлый", color: "#f3efe6", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/doveryai-bogu-01.jpg", "img/sote/doveryai-bogu-02.jpg", "img/sote/doveryai-bogu-03.jpg", "img/sote/doveryai-bogu-04.jpg"], photo: "img/sote/doveryai-bogu-01.jpg" }
             ]
           },
           {
             name: "Футболка ЛЮБОВЬ ЭТО",
             slug: "lyubov-eto",
             variants: [
-              { tone: "светлый", color: "#d8d6e0", size: "XS–5XL", price: "75 BYN", photo: "img/sote/lyubov-eto.jpg" }
+              { tone: "светлый", color: "#d8d6e0", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/lyubov-eto-01.jpg", "img/sote/lyubov-eto-02.jpg", "img/sote/lyubov-eto-03.jpg", "img/sote/lyubov-eto-04.jpg"], photo: "img/sote/lyubov-eto-01.jpg" }
             ]
           },
           {
             name: "Футболка ВСЕГДА РАДУЙТЕСЬ",
             slug: "vsegda-raduites",
             variants: [
-              { tone: "светлый", color: "#c9d2e4", size: "XS–5XL", price: "75 BYN", photo: "img/sote/vsegda-raduites.jpg" }
+              { tone: "светлый", color: "#c9d2e4", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/vsegda-raduites-01.jpg", "img/sote/vsegda-raduites-02.jpg", "img/sote/vsegda-raduites-03.jpg", "img/sote/vsegda-raduites-04.jpg"], photo: "img/sote/vsegda-raduites-01.jpg" }
             ]
           },
           {
             name: "Футболка Чистое сердце",
             slug: "chistoe-serdce",
             variants: [
-              { tone: "коричневый", color: "#7a5840", size: "XS–5XL", price: "75 BYN", photo: "img/sote/chistoe-serdce.jpg" }
+              { tone: "коричневый", color: "#7a5840", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/chistoe-serdce-01.jpg", "img/sote/chistoe-serdce-02.jpg", "img/sote/chistoe-serdce-03.jpg"], photo: "img/sote/chistoe-serdce-01.jpg" }
             ]
           },
           {
             name: "Футболка Мир меняется твоим примером",
             slug: "mir-menyaetsya",
             variants: [
-              { tone: "бежевый", color: "#d4a574", size: "XS–5XL", price: "75 BYN", photo: "img/sote/mir-menyaetsya.jpg" }
+              { tone: "бежевый", color: "#d4a574", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/mir-menyaetsya-01.jpg", "img/sote/mir-menyaetsya-02.jpg", "img/sote/mir-menyaetsya-03.jpg", "img/sote/mir-menyaetsya-04.jpg"], photo: "img/sote/mir-menyaetsya-01.jpg" }
             ]
           },
           {
@@ -595,70 +670,70 @@
             name: "Футболка We love Him",
             slug: "we-love-him",
             variants: [
-              { tone: "светлый", color: "#e6e6dc", size: "XS–5XL", price: "75 BYN", photo: "img/sote/we-love-him.jpg" }
+              { tone: "светлый", color: "#e6e6dc", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/we-love-him-01.jpg"], photo: "img/sote/we-love-him-01.jpg" }
             ]
           },
           {
             name: "Футболка То, что ты хочешь зажечь",
             slug: "zazhech",
             variants: [
-              { tone: "белый", color: "#f7f4ee", size: "XS–5XL", price: "75 BYN", photo: "img/sote/zazhech.jpg" }
+              { tone: "белый", color: "#f7f4ee", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/zazhech-01.jpg", "img/sote/zazhech-02.jpg", "img/sote/zazhech-03.jpg", "img/sote/zazhech-04.jpg"], photo: "img/sote/zazhech-01.jpg" }
             ]
           },
           {
             name: "Футболка Радуйтесь",
             slug: "raduites",
             variants: [
-              { tone: "светлый", color: "#cfc8d4", size: "XS–5XL", price: "80 BYN", photo: "img/sote/raduites.jpg" }
+              { tone: "светлый", color: "#cfc8d4", size: "XS–5XL", price: "80 BYN", photos: ["img/sote/raduites-01.jpg"], photo: "img/sote/raduites-01.jpg" }
             ]
           },
           {
             name: "Футболка Perfect love",
             slug: "perfect-love",
             variants: [
-              { tone: "коричневый", color: "#5c4033", size: "XS–5XL", price: "80 BYN", photo: "img/sote/perfect-love.jpg" }
+              { tone: "коричневый", color: "#5c4033", size: "XS–5XL", price: "80 BYN", photos: ["img/sote/perfect-love-01.jpg"], photo: "img/sote/perfect-love-01.jpg" }
             ]
           },
           {
             name: "Футболка Оставил 99",
             slug: "ostavil-99",
             variants: [
-              { tone: "светлый", color: "#aeb8b4", size: "XS–5XL", price: "80 BYN", photo: "img/sote/ostavil-99.jpg" }
+              { tone: "светлый", color: "#aeb8b4", size: "XS–5XL", price: "80 BYN", photos: ["img/sote/ostavil-99-01.jpg", "img/sote/ostavil-99-02.jpg", "img/sote/ostavil-99-03.jpg"], photo: "img/sote/ostavil-99-01.jpg" }
             ]
           },
           {
             name: "Футболка Дитя Царя",
             slug: "ditya-carya",
             variants: [
-              { tone: "коричневый", color: "#8b684a", size: "S–5XL", price: "80 BYN", photo: "img/sote/ditya-carya.jpg" }
+              { tone: "коричневый", color: "#8b684a", size: "S–5XL", price: "80 BYN", photos: ["img/sote/ditya-carya-01.jpg", "img/sote/ditya-carya-02.jpg", "img/sote/ditya-carya-03.jpg", "img/sote/ditya-carya-04.jpg"], photo: "img/sote/ditya-carya-01.jpg" }
             ]
           },
           {
             name: "Худи Спасибо Богу",
             slug: "spasibo-bogu",
             variants: [
-              { tone: "тёмный", color: "#1c212e", size: "XS–5XL", price: "130 BYN", photo: "img/sote/spasibo-bogu.jpg" }
+              { tone: "тёмный", color: "#1c212e", size: "XS–5XL", price: "130 BYN", photos: ["img/sote/spasibo-bogu-01.jpg", "img/sote/spasibo-bogu-02.jpg", "img/sote/spasibo-bogu-03.jpg"], photo: "img/sote/spasibo-bogu-01.jpg" }
             ]
           },
           {
             name: "Худи Lion",
             slug: "lion",
             variants: [
-              { tone: "тёмный", color: "#1d2530", size: "XS–5XL", price: "120 BYN", photo: "img/sote/lion.jpg" }
+              { tone: "тёмный", color: "#1d2530", size: "XS–5XL", price: "120 BYN", photos: ["img/sote/lion-01.jpg"], photo: "img/sote/lion-01.jpg" }
             ]
           },
           {
             name: "Худи ЛЮБОВЬ",
             slug: "lyubov",
             variants: [
-              { tone: "розовый", color: "#d4a090", size: "XS–3XL", price: "135 BYN", photo: "img/sote/lyubov.jpg" }
+              { tone: "розовый", color: "#d4a090", size: "XS–3XL", price: "135 BYN", photos: ["img/sote/lyubov-01.jpg", "img/sote/lyubov-02.jpg", "img/sote/lyubov-03.jpg"], photo: "img/sote/lyubov-01.jpg" }
             ]
           },
           {
             name: "Худи Stay Calm",
             slug: "stay-calm",
             variants: [
-              { tone: "голубой", color: "#9ec0de", size: "XS–3XL", price: "130 BYN", photo: "img/sote/stay-calm.jpg" }
+              { tone: "голубой", color: "#9ec0de", size: "XS–3XL", price: "130 BYN", photos: ["img/sote/stay-calm-01.jpg", "img/sote/stay-calm-02.jpg", "img/sote/stay-calm-03.jpg"], photo: "img/sote/stay-calm-01.jpg" }
             ]
           }
         ]
@@ -740,6 +815,8 @@
     let currentBrand = null;
     let currentItem = null;
     let currentTone = 0;
+    let currentPhotos = [];
+    let currentPhotoIndex = 0;
     const stage = document.getElementById("stage");
     const menuBtn = document.getElementById("countries-btn");
     const menuList = document.getElementById("country-menu");
@@ -754,7 +831,64 @@
           variants: [{ tone: "", color, size, price, photo: photo || "" }]
         };
       });
+      data.items.forEach((item) => {
+        item.variants.forEach((variant) => {
+          if (!Array.isArray(variant.photos) || !variant.photos.length) {
+            variant.photos = variant.photo ? [variant.photo] : [];
+          }
+          variant.photo = variant.photos[0] || variant.photo || "";
+        });
+      });
     });
+
+    function variantPhotos(variant) {
+      if (variant.photos && variant.photos.length) return variant.photos;
+      return variant.photo ? [variant.photo] : [];
+    }
+
+    function showProductPhoto(index) {
+      const photoEl = document.getElementById("product-photo");
+      const cloth = document.getElementById("product-cloth");
+      const prev = document.getElementById("gallery-prev");
+      const next = document.getElementById("gallery-next");
+      const dots = document.getElementById("gallery-dots");
+      if (!currentPhotos.length) {
+        photoEl.hidden = true;
+        photoEl.removeAttribute("src");
+        cloth.classList.remove("has-photo", "has-gallery");
+        cloth.tabIndex = -1;
+        prev.hidden = true;
+        next.hidden = true;
+        dots.hidden = true;
+        dots.innerHTML = "";
+        return;
+      }
+      currentPhotoIndex = (index + currentPhotos.length) % currentPhotos.length;
+      photoEl.hidden = false;
+      photoEl.src = currentPhotos[currentPhotoIndex];
+      photoEl.alt = currentItem
+        ? `${currentItem.name}${currentItem.variants[currentTone]?.tone ? ", " + currentItem.variants[currentTone].tone : ""}`
+        : "";
+      cloth.classList.add("has-photo");
+      cloth.classList.toggle("has-gallery", currentPhotos.length > 1);
+      cloth.tabIndex = 0;
+      const many = currentPhotos.length > 1;
+      prev.hidden = !many;
+      next.hidden = !many;
+      dots.hidden = !many;
+      dots.innerHTML = many
+        ? currentPhotos.map((_, i) => `<span class="${i === currentPhotoIndex ? "on" : ""}"></span>`).join("")
+        : "";
+      if (!lightbox.hidden) {
+        lightboxPhoto.src = currentPhotos[currentPhotoIndex];
+        lightboxPhoto.alt = photoEl.alt;
+        const count = document.getElementById("lightbox-count");
+        count.hidden = !many;
+        count.textContent = many ? `${currentPhotoIndex + 1} / ${currentPhotos.length}` : "";
+        document.getElementById("lightbox-prev").hidden = !many;
+        document.getElementById("lightbox-next").hidden = !many;
+      }
+    }
 
     function move(update) {
       stage.classList.remove("enter");
@@ -849,7 +983,7 @@
         items.innerHTML = data.items.map((item) => {
           const first = item.variants[0];
           const price = cardPrice(item);
-          const photo = first.photo;
+          const photo = variantPhotos(first)[0] || first.photo || "";
           const color = first.color;
           const clothStyle = `--swatch:${color}`;
           const cardStyle = photo
@@ -871,21 +1005,10 @@
       const variant = item.variants[toneIndex] || item.variants[0];
       currentTone = item.variants.indexOf(variant);
       const cloth = document.getElementById("product-cloth");
-      const photoEl = document.getElementById("product-photo");
-      cloth.classList.toggle("has-photo", !!variant.photo);
-      cloth.style.backgroundColor = variant.photo ? "#ebe4da" : variant.color;
+      cloth.style.backgroundColor = variantPhotos(variant).length ? "#ebe4da" : variant.color;
       cloth.style.setProperty("--swatch", variant.color);
-      if (variant.photo) {
-        photoEl.hidden = false;
-        photoEl.src = variant.photo;
-        photoEl.alt = `${item.name}${variant.tone ? ", " + variant.tone : ""}`;
-        cloth.tabIndex = 0;
-      } else {
-        photoEl.hidden = true;
-        photoEl.removeAttribute("src");
-        photoEl.alt = "";
-        cloth.tabIndex = -1;
-      }
+      currentPhotos = variantPhotos(variant);
+      showProductPhoto(0);
       const colors = document.getElementById("product-colors");
       const many = item.variants.length > 1;
       colors.hidden = !many;
@@ -1023,10 +1146,8 @@
     const lightbox = document.getElementById("lightbox");
     const lightboxPhoto = document.getElementById("lightbox-photo");
     function openLightbox() {
-      const photoEl = document.getElementById("product-photo");
-      if (!photoEl || photoEl.hidden || !photoEl.src) return;
-      lightboxPhoto.src = photoEl.currentSrc || photoEl.src;
-      lightboxPhoto.alt = photoEl.alt || "";
+      if (!currentPhotos.length) return;
+      showProductPhoto(currentPhotoIndex);
       lightbox.hidden = false;
       document.body.style.overflow = "hidden";
       document.getElementById("lightbox-close").focus();
@@ -1035,10 +1156,38 @@
       if (lightbox.hidden) return;
       lightbox.hidden = true;
       lightboxPhoto.removeAttribute("src");
+      document.getElementById("lightbox-count").hidden = true;
+      document.getElementById("lightbox-prev").hidden = true;
+      document.getElementById("lightbox-next").hidden = true;
       document.body.style.overflow = "";
     }
-    document.getElementById("product-cloth").addEventListener("click", openLightbox);
+    function stepPhoto(delta) {
+      if (currentPhotos.length < 2) return;
+      showProductPhoto(currentPhotoIndex + delta);
+    }
+    document.getElementById("gallery-prev").addEventListener("click", (event) => {
+      event.stopPropagation();
+      stepPhoto(-1);
+    });
+    document.getElementById("gallery-next").addEventListener("click", (event) => {
+      event.stopPropagation();
+      stepPhoto(1);
+    });
+    document.getElementById("product-cloth").addEventListener("click", (event) => {
+      if (event.target.closest(".gallery-nav")) return;
+      openLightbox();
+    });
     document.getElementById("product-cloth").addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        stepPhoto(-1);
+        return;
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        stepPhoto(1);
+        return;
+      }
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         openLightbox();
@@ -1048,10 +1197,21 @@
       event.stopPropagation();
       closeLightbox();
     });
+    document.getElementById("lightbox-prev").addEventListener("click", (event) => {
+      event.stopPropagation();
+      stepPhoto(-1);
+    });
+    document.getElementById("lightbox-next").addEventListener("click", (event) => {
+      event.stopPropagation();
+      stepPhoto(1);
+    });
     lightbox.addEventListener("click", closeLightbox);
     lightboxPhoto.addEventListener("click", (event) => event.stopPropagation());
     document.addEventListener("keydown", (event) => {
+      if (lightbox.hidden) return;
       if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowLeft") stepPhoto(-1);
+      if (event.key === "ArrowRight") stepPhoto(1);
     });
 
     apply(false);
