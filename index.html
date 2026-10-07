@@ -1147,8 +1147,8 @@
     const lightboxPhoto = document.getElementById("lightbox-photo");
     function openLightbox() {
       if (!currentPhotos.length) return;
-      showProductPhoto(currentPhotoIndex);
       lightbox.hidden = false;
+      showProductPhoto(currentPhotoIndex);
       document.body.style.overflow = "hidden";
       document.getElementById("lightbox-close").focus();
     }
