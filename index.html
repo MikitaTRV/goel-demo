@@ -109,6 +109,8 @@
     }
     @media (prefers-reduced-motion: reduce) {
       #stage.enter { animation: none; }
+      .cloth > img, .product-cloth > img, .lightbox img { transition: none; }
+      .gallery-nav, .lightbox-nav, .gallery-dots span { transition: none; }
     }
     #home-crumbs { margin-top: 0; }
     .crumbs { display: flex; gap: 8px; align-items: center; margin: 28px 0 22px; font-size: 14px; line-height: 1.4; color: var(--muted); }
@@ -132,6 +134,10 @@
     }
     .tone.on { outline: 2px solid var(--ink); outline-offset: 2px; }
     .items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 28px 0 40px; }
+    #items:has(.gender-block) {
+      display: block;
+      padding: 8px 0 32px;
+    }
     .item {
       background-color: var(--paper);
       background-image: linear-gradient(var(--swatch), var(--swatch));
@@ -168,7 +174,10 @@
       height: 100%;
       object-fit: contain;
       object-position: center;
+      opacity: 1;
+      transition: opacity 0.35s ease;
     }
+    .product-cloth > img.is-fading { opacity: 0; }
     .cloth > .ph, .product-cloth > .ph {
       position: absolute;
       left: 12px;
@@ -222,26 +231,36 @@
       opacity: 1;
     }
     .product-cloth.has-gallery::after {
-      left: 56px;
+      left: 52px;
     }
     .gallery-nav {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       z-index: 2;
-      width: 40px;
-      height: 40px;
+      width: 34px;
+      height: 34px;
       border: 0;
-      background: rgba(28, 24, 20, 0.55);
-      color: #fff;
-      font-size: 22px;
+      border-radius: 50%;
+      background: rgba(255, 252, 248, 0.88);
+      color: var(--ink);
+      font-size: 18px;
       line-height: 1;
       cursor: pointer;
+      box-shadow: 0 1px 4px rgba(28, 24, 20, 0.12);
+      display: grid;
+      place-items: center;
+      opacity: 0.85;
+      transition: opacity 0.2s ease, background 0.2s ease, transform 0.2s ease;
     }
     .gallery-nav[hidden] { display: none; }
-    .gallery-nav.prev { left: 8px; }
-    .gallery-nav.next { right: 8px; }
-    .gallery-nav:hover { background: rgba(28, 24, 20, 0.75); }
+    .gallery-nav.prev { left: 10px; }
+    .gallery-nav.next { right: 10px; }
+    .gallery-nav:hover {
+      opacity: 1;
+      background: #fffcf8;
+    }
+    .gallery-nav:active { transform: translateY(-50%) scale(0.96); }
     .gallery-dots {
       position: absolute;
       left: 0;
@@ -255,29 +274,45 @@
     }
     .gallery-dots[hidden] { display: none; }
     .gallery-dots span {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.45);
-      box-shadow: 0 0 0 1px rgba(28,24,20,0.25);
+      background: rgba(255,255,255,0.5);
+      box-shadow: 0 0 0 1px rgba(28,24,20,0.18);
+      transition: background 0.25s ease, transform 0.25s ease;
     }
-    .gallery-dots span.on { background: #fff; }
+    .gallery-dots span.on {
+      background: #fff;
+      transform: scale(1.15);
+    }
     .lightbox-nav {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
       border: 0;
-      background: rgba(255,255,255,0.12);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.14);
       color: #fff;
-      font-size: 28px;
+      font-size: 22px;
       cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s ease, transform 0.2s ease;
     }
     .lightbox-nav[hidden] { display: none; }
-    .lightbox-nav.prev { left: 16px; }
-    .lightbox-nav.next { right: 16px; }
-    .lightbox-nav:hover { background: rgba(255,255,255,0.22); }
+    .lightbox-nav.prev { left: 18px; }
+    .lightbox-nav.next { right: 18px; }
+    .lightbox-nav:hover { background: rgba(255,255,255,0.24); }
+    .lightbox-nav:active { transform: translateY(-50%) scale(0.96); }
+    .gender-block { margin-top: 8px; }
+    .gender-block h2 {
+      margin: 24px 0 0;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+    .gender-block .items { padding-top: 14px; padding-bottom: 12px; }
     .lightbox-count {
       position: absolute;
       left: 50%;
@@ -308,7 +343,10 @@
       background: #ebe4da;
       box-shadow: 0 12px 40px rgba(0,0,0,0.35);
       cursor: default;
+      opacity: 1;
+      transition: opacity 0.35s ease;
     }
+    .lightbox img.is-fading { opacity: 0; }
     .lightbox-close {
       position: absolute;
       top: 16px;
@@ -494,319 +532,385 @@
     const countryName = { belarus: "Беларусь", russia: "Россия" };
     const countrySlug = { "Беларусь": "belarus", "Россия": "russia" };
     const brands = {
-      godderob: {
-        country: "Беларусь",
-        title: "godderob",
-        blurb: "",
-        note: "",
-        items: [
-          {
-            name: "Свитшот CHILD OF GOD",
-            slug: "child-of-god",
-            variants: [
-              { tone: "светлый", color: "#efe8dc", size: "S, M, L", price: "154 BYN", photos: ["img/godderob/child-of-god-01.jpg", "img/godderob/child-of-god-02.jpg", "img/godderob/child-of-god-03.jpg"], photo: "img/godderob/child-of-god-01.jpg" }
-            ]
-          },
-          {
-            name: "Свитшот JESUS IS LORD",
-            slug: "jesus-is-lord",
-            variants: [
-              { tone: "шоколад", color: "#3a2c28", size: "S, L", price: "154 BYN", photos: ["img/godderob/jesus-is-lord-chocolate-01.jpg", "img/godderob/jesus-is-lord-chocolate-02.jpg"], photo: "img/godderob/jesus-is-lord-chocolate-01.jpg" },
-              { tone: "горчичный", color: "#c9a227", size: "S, M, L", price: "134 BYN", photos: ["img/godderob/jesus-is-lord-mustard-01.jpg"], photo: "img/godderob/jesus-is-lord-mustard-01.jpg" }
-            ]
-          },
-          {
-            name: "Свитшот ONLY JESUS",
-            slug: "only-jesus",
-            variants: [
-              { tone: "чёрный", color: "#161616", size: "S, M, L, XL", price: "160 BYN", photos: ["img/godderob/only-jesus-black-01.jpg"], photo: "img/godderob/only-jesus-black-01.jpg" },
-              { tone: "травяной", color: "#6e6a3e", size: "L, XL", price: "154 BYN", photos: ["img/godderob/only-jesus-grass-01.jpg", "img/godderob/only-jesus-grass-02.jpg"], photo: "img/godderob/only-jesus-grass-01.jpg" }
-            ]
-          },
-          {
-            name: "Свитшот LOVE, BUT DO IT LIKE JESUS",
-            slug: "love-like-jesus",
-            variants: [
-              { tone: "травяной", color: "#6e6a3e", size: "XS, S, M, L", price: "144 BYN", photos: ["img/godderob/love-like-jesus-01.jpg", "img/godderob/love-like-jesus-02.jpg"], photo: "img/godderob/love-like-jesus-01.jpg" }
-            ]
-          },
-          {
-            name: "Свитшот BOZHIY ODUVANCHIK",
-            slug: "oduvanchik",
-            variants: [
-              { tone: "розовый", color: "#f2c4ce", size: "XS, S, M, L", price: "154 BYN", photos: ["img/godderob/oduvanchik-pink-01.jpg", "img/godderob/oduvanchik-pink-02.jpg", "img/godderob/oduvanchik-pink-03.jpg"], photo: "img/godderob/oduvanchik-pink-01.jpg" },
-              { tone: "небесный", color: "#c5cdd6", size: "S, M, L", price: "154 BYN", photos: ["img/godderob/oduvanchik-sky-01.jpg"], photo: "img/godderob/oduvanchik-sky-01.jpg" }
-            ]
-          },
-          {
-            name: "Свитшот JESUS IS MY SHEPHERD",
-            slug: "shepherd",
-            variants: [
-              { tone: "кофе", color: "#39302a", size: "", price: "179 BYN", photos: ["img/godderob/shepherd-coffee-01.jpg"], photo: "img/godderob/shepherd-coffee-01.jpg" },
-              { tone: "изумруд", color: "#1f3d34", size: "", price: "179 BYN", photos: ["img/godderob/shepherd-emerald-01.jpg"], photo: "img/godderob/shepherd-emerald-01.jpg" }
-            ]
-          },
-          {
-            name: "Полузип JESUS LOVERS CLUB",
-            slug: "jesus-lovers-club",
-            variants: [
-              { tone: "травяной", color: "#6f7540", size: "S, M, L, XL", price: "184 BYN", photos: ["img/godderob/jlc-grass-01.jpg"], photo: "img/godderob/jlc-grass-01.jpg" },
-              { tone: "бежевый", color: "#d6c6b4", size: "M, L, XL", price: "184 BYN", photos: ["img/godderob/jlc-beige-01.jpg", "img/godderob/jlc-beige-02.jpg"], photo: "img/godderob/jlc-beige-01.jpg" },
-              { tone: "красный", color: "#9a3538", size: "S, M, L, XL", price: "184 BYN", photos: ["img/godderob/jlc-red-01.jpg", "img/godderob/jlc-red-02.jpg"], photo: "img/godderob/jlc-red-01.jpg" },
-              { tone: "небесный", color: "#b7c5d0", size: "S", price: "184 BYN", photos: ["img/godderob/jlc-sky-01.jpg"], photo: "img/godderob/jlc-sky-01.jpg" },
-              { tone: "синий", color: "#1a2438", size: "XS, S, M, L, XL", price: "184 BYN", photos: ["img/godderob/jlc-blue-01.jpg", "img/godderob/jlc-blue-02.jpg"], photo: "img/godderob/jlc-blue-01.jpg" }
-            ]
-          },
-          {
-            name: "Лонгслив PRAISE THE LORD",
-            slug: "praise-long",
-            variants: [
-              { tone: "синий", color: "#2a4570", size: "S, L", price: "125 BYN", photos: ["img/godderob/praise-long-blue-01.jpg"], photo: "img/godderob/praise-long-blue-01.jpg" },
-              { tone: "чёрный", color: "#161616", size: "S, M, XL, 2XL", price: "120 BYN", photos: ["img/godderob/praise-long-black-01.jpg"], photo: "img/godderob/praise-long-black-01.jpg" }
-            ]
-          },
-          {
-            name: "Лонгслив BY JESUS",
-            slug: "by-jesus",
-            variants: [
-              { tone: "тёмно-синий", color: "#1a2740", size: "M", price: "130 BYN", photos: ["img/godderob/by-jesus-01.jpg"], photo: "img/godderob/by-jesus-01.jpg" }
-            ]
-          },
-          {
-            name: "Лонгслив WINS",
-            slug: "wins",
-            variants: [
-              { tone: "чёрный", color: "#161616", size: "L, 2XL", price: "115 BYN", photos: ["img/godderob/wins-01.jpg"], photo: "img/godderob/wins-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка БОГ ЕСТЬ ЛЮБОВЬ",
-            slug: "bog-est-lubov",
-            variants: [
-              { tone: "молочный", color: "#f3efe8", size: "XS, S, M, L, XL, 2XL", price: "135 BYN", photos: ["img/godderob/bog-est-lubov-milk-01.jpg", "img/godderob/bog-est-lubov-milk-02.jpg", "img/godderob/bog-est-lubov-milk-03.jpg"], photo: "img/godderob/bog-est-lubov-milk-01.jpg" },
-              { tone: "розовый", color: "#f2c4ce", size: "XS, M", price: "135 BYN", photos: ["img/godderob/bog-est-lubov-pink-01.jpg", "img/godderob/bog-est-lubov-pink-02.jpg"], photo: "img/godderob/bog-est-lubov-pink-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка JESUS HEALED MY HEART",
-            slug: "jesus-healed",
-            variants: [
-              { tone: "белый", color: "#f7f4ee", size: "M, L, 2XL", price: "135 BYN", photos: ["img/godderob/jesus-healed-01.jpg", "img/godderob/jesus-healed-02.jpg"], photo: "img/godderob/jesus-healed-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка NAME",
-            slug: "name",
-            variants: [
-              { tone: "графитовый", color: "#4a474e", size: "S, M, L, XL", price: "135 BYN", photos: ["img/godderob/name-graphite-01.jpg", "img/godderob/name-graphite-02.jpg"], photo: "img/godderob/name-graphite-01.jpg" },
-              { tone: "бордовый", color: "#6e3c41", size: "S, M, L, XL, 2XL", price: "", photos: ["img/godderob/name-burgundy-01.jpg"], photo: "img/godderob/name-burgundy-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка SAVED",
-            slug: "saved",
-            variants: [
-              { tone: "бордовый", color: "#5c3038", size: "S, M, L, XL, 2XL", price: "100 BYN", photos: ["img/godderob/saved-01.jpg", "img/godderob/saved-02.jpg"], photo: "img/godderob/saved-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка PRAISE THE LORD",
-            slug: "praise-tee",
-            variants: [
-              { tone: "чёрный", color: "#161616", size: "XL, 2XL", price: "105 BYN", photos: ["img/godderob/praise-tee-black-01.jpg"], photo: "img/godderob/praise-tee-black-01.jpg" }
-            ]
-          }
-        ]
+  godderob: {
+    country: "Беларусь",
+    title: "godderob",
+    blurb: "",
+    note: "",
+    items: [
+      {
+        name: "Лонгслив BY JESUS",
+        slug: "by-jesus",
+        variants: [
+          { tone: "тёмно-синий", color: "#1a2740", size: "M", price: "130 BYN", photos: ["img/godderob/by-jesus-01.jpg"], photo: "img/godderob/by-jesus-01.jpg" }
+        ],
+        gender: "women"
       },
-      sote: {
-        country: "Беларусь",
-        title: "sote_m",
-        blurb: "",
-        note: "",
-        items: [
-          {
-            name: "Футболка ДОВЕРЯЙ БОГУ",
-            slug: "doveryai-bogu",
-            variants: [
-              { tone: "светлый", color: "#f3efe6", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/doveryai-bogu-01.jpg", "img/sote/doveryai-bogu-02.jpg", "img/sote/doveryai-bogu-03.jpg", "img/sote/doveryai-bogu-04.jpg"], photo: "img/sote/doveryai-bogu-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка ЛЮБОВЬ ЭТО",
-            slug: "lyubov-eto",
-            variants: [
-              { tone: "светлый", color: "#d8d6e0", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/lyubov-eto-01.jpg", "img/sote/lyubov-eto-02.jpg", "img/sote/lyubov-eto-03.jpg", "img/sote/lyubov-eto-04.jpg"], photo: "img/sote/lyubov-eto-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка ВСЕГДА РАДУЙТЕСЬ",
-            slug: "vsegda-raduites",
-            variants: [
-              { tone: "светлый", color: "#c9d2e4", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/vsegda-raduites-01.jpg", "img/sote/vsegda-raduites-02.jpg", "img/sote/vsegda-raduites-03.jpg", "img/sote/vsegda-raduites-04.jpg"], photo: "img/sote/vsegda-raduites-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка Чистое сердце",
-            slug: "chistoe-serdce",
-            variants: [
-              { tone: "коричневый", color: "#7a5840", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/chistoe-serdce-01.jpg", "img/sote/chistoe-serdce-02.jpg", "img/sote/chistoe-serdce-03.jpg"], photo: "img/sote/chistoe-serdce-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка Мир меняется твоим примером",
-            slug: "mir-menyaetsya",
-            variants: [
-              { tone: "бежевый", color: "#d4a574", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/mir-menyaetsya-01.jpg", "img/sote/mir-menyaetsya-02.jpg", "img/sote/mir-menyaetsya-03.jpg", "img/sote/mir-menyaetsya-04.jpg"], photo: "img/sote/mir-menyaetsya-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка Зажги своё сердце",
-            slug: "zazhgi",
-            variants: [
-              { tone: "", color: "#f3efe6", size: "XS–5XL", price: "75 BYN", photo: "" }
-            ]
-          },
-          {
-            name: "Футболка We love Him",
-            slug: "we-love-him",
-            variants: [
-              { tone: "светлый", color: "#e6e6dc", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/we-love-him-01.jpg"], photo: "img/sote/we-love-him-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка То, что ты хочешь зажечь",
-            slug: "zazhech",
-            variants: [
-              { tone: "белый", color: "#f7f4ee", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/zazhech-01.jpg", "img/sote/zazhech-02.jpg", "img/sote/zazhech-03.jpg", "img/sote/zazhech-04.jpg"], photo: "img/sote/zazhech-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка Радуйтесь",
-            slug: "raduites",
-            variants: [
-              { tone: "светлый", color: "#cfc8d4", size: "XS–5XL", price: "80 BYN", photos: ["img/sote/raduites-01.jpg"], photo: "img/sote/raduites-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка Perfect love",
-            slug: "perfect-love",
-            variants: [
-              { tone: "коричневый", color: "#5c4033", size: "XS–5XL", price: "80 BYN", photos: ["img/sote/perfect-love-01.jpg"], photo: "img/sote/perfect-love-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка Оставил 99",
-            slug: "ostavil-99",
-            variants: [
-              { tone: "светлый", color: "#aeb8b4", size: "XS–5XL", price: "80 BYN", photos: ["img/sote/ostavil-99-01.jpg", "img/sote/ostavil-99-02.jpg", "img/sote/ostavil-99-03.jpg"], photo: "img/sote/ostavil-99-01.jpg" }
-            ]
-          },
-          {
-            name: "Футболка Дитя Царя",
-            slug: "ditya-carya",
-            variants: [
-              { tone: "коричневый", color: "#8b684a", size: "S–5XL", price: "80 BYN", photos: ["img/sote/ditya-carya-01.jpg", "img/sote/ditya-carya-02.jpg", "img/sote/ditya-carya-03.jpg", "img/sote/ditya-carya-04.jpg"], photo: "img/sote/ditya-carya-01.jpg" }
-            ]
-          },
-          {
-            name: "Худи Спасибо Богу",
-            slug: "spasibo-bogu",
-            variants: [
-              { tone: "тёмный", color: "#1c212e", size: "XS–5XL", price: "130 BYN", photos: ["img/sote/spasibo-bogu-01.jpg", "img/sote/spasibo-bogu-02.jpg", "img/sote/spasibo-bogu-03.jpg"], photo: "img/sote/spasibo-bogu-01.jpg" }
-            ]
-          },
-          {
-            name: "Худи Lion",
-            slug: "lion",
-            variants: [
-              { tone: "тёмный", color: "#1d2530", size: "XS–5XL", price: "120 BYN", photos: ["img/sote/lion-01.jpg"], photo: "img/sote/lion-01.jpg" }
-            ]
-          },
-          {
-            name: "Худи ЛЮБОВЬ",
-            slug: "lyubov",
-            variants: [
-              { tone: "розовый", color: "#d4a090", size: "XS–3XL", price: "135 BYN", photos: ["img/sote/lyubov-01.jpg", "img/sote/lyubov-02.jpg", "img/sote/lyubov-03.jpg"], photo: "img/sote/lyubov-01.jpg" }
-            ]
-          },
-          {
-            name: "Худи Stay Calm",
-            slug: "stay-calm",
-            variants: [
-              { tone: "голубой", color: "#9ec0de", size: "XS–3XL", price: "130 BYN", photos: ["img/sote/stay-calm-01.jpg", "img/sote/stay-calm-02.jpg", "img/sote/stay-calm-03.jpg"], photo: "img/sote/stay-calm-01.jpg" }
-            ]
-          }
-        ]
+      {
+        name: "Лонгслив PRAISE THE LORD",
+        slug: "praise-long-women",
+        variants: [
+          { tone: "чёрный", color: "#161616", size: "S, M, XL, 2XL", price: "120 BYN", photos: ["img/godderob/praise-long-black-01.jpg"], photo: "img/godderob/praise-long-black-01.jpg" }
+        ],
+        gender: "women"
       },
-      fami: {
-        country: "Беларусь",
-        title: "fami.ly.by",
-        blurb: "Одежда для всей семьи",
-        note: "Ассортимент не собран. Цен в открытых подписях нет.",
-        items: [
-          ["#f4f1ea", "Футболка «Иисус — путь, истина, жизнь»", "", "", "put"],
-          ["#1c1c1c", "Футболка «Лев и Агнец»", "", "", "lev"],
-          ["#2f4f86", "Футболка JESUS", "", "", "jesus"]
-        ]
+      {
+        name: "Полузип JESUS LOVERS CLUB",
+        slug: "jesus-lovers-club-women",
+        variants: [
+          { tone: "небесный", color: "#b7c5d0", size: "S", price: "184 BYN", photos: ["img/godderob/jlc-sky-01.jpg"], photo: "img/godderob/jlc-sky-01.jpg" }
+        ],
+        gender: "women"
       },
-      poputi: {
-        country: "Беларусь",
-        title: "Poputi_store",
-        blurb: "Христианская одежда",
-        note: "Ассортимент не собран.",
-        items: [
-          ["#c9b59a", "Новая коллекция", "", "", "novaya"]
-        ]
+      {
+        name: "Свитшот BOZHIY ODUVANCHIK",
+        slug: "oduvanchik",
+        variants: [
+          { tone: "розовый", color: "#f2c4ce", size: "XS, S, M, L", price: "154 BYN", photos: ["img/godderob/oduvanchik-pink-01.jpg", "img/godderob/oduvanchik-pink-03.jpg", "img/godderob/oduvanchik-pink-02.jpg"], photo: "img/godderob/oduvanchik-pink-01.jpg" },
+          { tone: "небесный", color: "#c5cdd6", size: "S, M, L", price: "154 BYN", photos: ["img/godderob/oduvanchik-sky-01.jpg"], photo: "img/godderob/oduvanchik-sky-01.jpg" }
+        ],
+        gender: "women"
       },
-      sola: {
-        country: "Беларусь",
-        title: "sola_minsk",
-        blurb: "Футболки и худи",
-        note: "Названия и текущие цены с christ.by. Буквенных размеров на сайте нет, посадка Oversize.",
-        source: "christ.by",
-        sourceHref: "https://christ.by/",
-        items: [
-          ["#2c2c2c", "Футболка Grace", "Oversize", "75 BYN", "grace"],
-          ["#2c2c2c", "Худи Grace", "Oversize", "120 BYN", "hudi-grace"],
-          ["#2c2c2c", "Футболка Jesus (леопард)", "Oversize", "80 BYN", "jesus-leopard"],
-          ["#2c2c2c", "Футболка Born Again Christian Dior", "Oversize", "75 BYN", "born-again"],
-          ["#2c2c2c", "Футболка Jesus The Only Way", "Oversize", "75 BYN", "jesus-the-only-way"],
-          ["#2c2c2c", "Футболка Jesus Saves", "Oversize", "75 BYN", "jesus-saves"],
-          ["#2c2c2c", "Худи Saved by Jesus", "Oversize", "120 BYN", "hudi-saved"],
-          ["#2c2c2c", "Худи Born Again Christian Dior", "Oversize", "120 BYN", "hudi-born-again"],
-          ["#2c2c2c", "Худи Jesus King", "Oversize", "120 BYN", "hudi-jesus-king"],
-          ["#2c2c2c", "Футболка Church isn’t complete without u", "Oversize", "75 BYN", "church"],
-          ["#2c2c2c", "Футболка He loved first", "Oversize", "80 BYN", "he-loved-first"],
-          ["#2c2c2c", "Футболка Even heroes need Jesus", "Oversize", "80 BYN", "even-heroes"],
-          ["#2c2c2c", "Футболка Yall need Jesus", "Oversize", "80 BYN", "yall-need-jesus"],
-          ["#2c2c2c", "Футболка My world revolves around the SON", "Oversize", "80 BYN", "my-world"],
-          ["#f3efe8", "Футболка Dude, He said we are going fishing", "Oversize", "75 BYN", "fishing"],
-          ["#f3efe8", "Футболка Jesus", "Oversize", "75 BYN", "jesus"],
-          ["#f3efe8", "Футболка I Love Jesus", "Oversize", "80 BYN", "i-love-jesus"],
-          ["#f3efe8", "Футболка Jesus is my jam", "Oversize", "80 BYN", "jam"],
-          ["#2c2c2c", "Футболка Give Me Jesus", "Oversize", "75 BYN", "give-me-jesus"],
-          ["#2c2c2c", "Футболка He is Rizzin", "Oversize", "85 BYN", "rizzin"],
-          ["#2c2c2c", "Футболка Faith Over Fear", "Oversize", "80 BYN", "faith-over-fear"],
-          ["#2c2c2c", "Худи Love Like Jesus", "Oversize", "110 BYN", "hudi-love"],
-          ["#2c2c2c", "Футболка Catch Up With Jesus", "Oversize", "85 BYN", "catch-up"],
-          ["#2c2c2c", "Футболка Jesus Loves Gamers", "Oversize", "85 BYN", "gamers"],
-          ["#2c2c2c", "Футболка Grace Grace", "Oversize", "80 BYN", "grace-grace"],
-          ["#2c2c2c", "Футболка Faith Can Move Mountains", "Oversize", "75 BYN", "mountains"],
-          ["#2c2c2c", "Футболка Made For More", "Oversize", "80 BYN", "made-for-more"]
-        ]
+      {
+        name: "Свитшот CHILD OF GOD",
+        slug: "child-of-god",
+        variants: [
+          { tone: "светлый", color: "#efe8dc", size: "S, M, L", price: "154 BYN", photos: ["img/godderob/child-of-god-01.jpg", "img/godderob/child-of-god-02.jpg", "img/godderob/child-of-god-03.jpg"], photo: "img/godderob/child-of-god-01.jpg" }
+        ],
+        gender: "women"
       },
-      art: {
-        country: "Россия",
-        title: "art.brand.jesus.saves",
-        blurb: "Футболки",
-        note: "Показаны не все вещи.",
-        items: [
-          ["#d9d9d9", "Футболка Classic STRENGTH", "Оверсайз", "2000 ₽", "strength"],
-          ["#f7f4ee", "Футболка Women VICTORY", "Оверсайз", "2000 ₽", "victory"],
-          ["#fbfbfb", "Футболка HE'S MY DEFENDER", "Оверсайз", "2000 ₽", "defender"]
-        ]
+      {
+        name: "Свитшот JESUS IS LORD",
+        slug: "jesus-is-lord-women",
+        variants: [
+          { tone: "горчичный", color: "#c9a227", size: "S, M, L", price: "134 BYN", photos: ["img/godderob/jesus-is-lord-mustard-01.jpg"], photo: "img/godderob/jesus-is-lord-mustard-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Свитшот JESUS IS MY SHEPHERD",
+        slug: "shepherd-women",
+        variants: [
+          { tone: "кофе", color: "#39302a", size: "", price: "179 BYN", photos: ["img/godderob/shepherd-coffee-01.jpg"], photo: "img/godderob/shepherd-coffee-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Свитшот LOVE, BUT DO IT LIKE JESUS",
+        slug: "love-like-jesus",
+        variants: [
+          { tone: "травяной", color: "#6e6a3e", size: "XS, S, M, L", price: "144 BYN", photos: ["img/godderob/love-like-jesus-01.jpg", "img/godderob/love-like-jesus-02.jpg"], photo: "img/godderob/love-like-jesus-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка JESUS HEALED MY HEART",
+        slug: "jesus-healed",
+        variants: [
+          { tone: "белый", color: "#f7f4ee", size: "M, L, 2XL", price: "135 BYN", photos: ["img/godderob/jesus-healed-01.jpg", "img/godderob/jesus-healed-02.jpg"], photo: "img/godderob/jesus-healed-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка NAME",
+        slug: "name",
+        variants: [
+          { tone: "графитовый", color: "#4a474e", size: "S, M, L, XL", price: "135 BYN", photos: ["img/godderob/name-graphite-01.jpg", "img/godderob/name-graphite-02.jpg"], photo: "img/godderob/name-graphite-01.jpg" },
+          { tone: "бордовый", color: "#6e3c41", size: "S, M, L, XL, 2XL", price: "", photos: ["img/godderob/name-burgundy-01.jpg"], photo: "img/godderob/name-burgundy-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка БОГ ЕСТЬ ЛЮБОВЬ",
+        slug: "bog-est-lubov-women",
+        variants: [
+          { tone: "розовый", color: "#f2c4ce", size: "XS, M", price: "135 BYN", photos: ["img/godderob/bog-est-lubov-pink-01.jpg", "img/godderob/bog-est-lubov-pink-02.jpg"], photo: "img/godderob/bog-est-lubov-pink-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Лонгслив PRAISE THE LORD",
+        slug: "praise-long-men",
+        variants: [
+          { tone: "синий", color: "#2a4570", size: "S, L", price: "125 BYN", photos: ["img/godderob/praise-long-blue-01.jpg"], photo: "img/godderob/praise-long-blue-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Лонгслив WINS",
+        slug: "wins",
+        variants: [
+          { tone: "чёрный", color: "#161616", size: "L, 2XL", price: "115 BYN", photos: ["img/godderob/wins-01.jpg"], photo: "img/godderob/wins-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Полузип JESUS LOVERS CLUB",
+        slug: "jesus-lovers-club-men",
+        variants: [
+          { tone: "травяной", color: "#6f7540", size: "S, M, L, XL", price: "184 BYN", photos: ["img/godderob/jlc-grass-01.jpg"], photo: "img/godderob/jlc-grass-01.jpg" },
+          { tone: "бежевый", color: "#d6c6b4", size: "M, L, XL", price: "184 BYN", photos: ["img/godderob/jlc-beige-01.jpg", "img/godderob/jlc-beige-02.jpg"], photo: "img/godderob/jlc-beige-01.jpg" },
+          { tone: "красный", color: "#9a3538", size: "S, M, L, XL", price: "184 BYN", photos: ["img/godderob/jlc-red-01.jpg", "img/godderob/jlc-red-02.jpg"], photo: "img/godderob/jlc-red-01.jpg" },
+          { tone: "синий", color: "#1a2438", size: "XS, S, M, L, XL", price: "184 BYN", photos: ["img/godderob/jlc-blue-01.jpg", "img/godderob/jlc-blue-02.jpg"], photo: "img/godderob/jlc-blue-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Свитшот JESUS IS LORD",
+        slug: "jesus-is-lord-men",
+        variants: [
+          { tone: "шоколад", color: "#3a2c28", size: "S, L", price: "154 BYN", photos: ["img/godderob/jesus-is-lord-chocolate-01.jpg", "img/godderob/jesus-is-lord-chocolate-02.jpg"], photo: "img/godderob/jesus-is-lord-chocolate-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Свитшот JESUS IS MY SHEPHERD",
+        slug: "shepherd-men",
+        variants: [
+          { tone: "изумруд", color: "#1f3d34", size: "", price: "179 BYN", photos: ["img/godderob/shepherd-emerald-01.jpg"], photo: "img/godderob/shepherd-emerald-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Свитшот ONLY JESUS",
+        slug: "only-jesus",
+        variants: [
+          { tone: "чёрный", color: "#161616", size: "S, M, L, XL", price: "160 BYN", photos: ["img/godderob/only-jesus-black-01.jpg"], photo: "img/godderob/only-jesus-black-01.jpg" },
+          { tone: "травяной", color: "#6e6a3e", size: "L, XL", price: "154 BYN", photos: ["img/godderob/only-jesus-grass-01.jpg", "img/godderob/only-jesus-grass-02.jpg"], photo: "img/godderob/only-jesus-grass-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Футболка PRAISE THE LORD",
+        slug: "praise-tee",
+        variants: [
+          { tone: "чёрный", color: "#161616", size: "XL, 2XL", price: "105 BYN", photos: ["img/godderob/praise-tee-black-01.jpg"], photo: "img/godderob/praise-tee-black-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Футболка SAVED",
+        slug: "saved",
+        variants: [
+          { tone: "бордовый", color: "#5c3038", size: "S, M, L, XL, 2XL", price: "100 BYN", photos: ["img/godderob/saved-01.jpg", "img/godderob/saved-02.jpg"], photo: "img/godderob/saved-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Футболка БОГ ЕСТЬ ЛЮБОВЬ",
+        slug: "bog-est-lubov-men",
+        variants: [
+          { tone: "молочный", color: "#f3efe8", size: "XS, S, M, L, XL, 2XL", price: "135 BYN", photos: ["img/godderob/bog-est-lubov-milk-01.jpg", "img/godderob/bog-est-lubov-milk-03.jpg", "img/godderob/bog-est-lubov-milk-02.jpg"], photo: "img/godderob/bog-est-lubov-milk-01.jpg" }
+        ],
+        gender: "men"
       }
-    };
+    ]
+  },
+  sote: {
+    country: "Беларусь",
+    title: "sote_m",
+    blurb: "",
+    note: "",
+    items: [
+      {
+        name: "Футболка Perfect love",
+        slug: "perfect-love",
+        variants: [
+          { tone: "коричневый", color: "#5c4033", size: "XS–5XL", price: "80 BYN", photos: ["img/sote/perfect-love-01.jpg"], photo: "img/sote/perfect-love-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка We love Him",
+        slug: "we-love-him",
+        variants: [
+          { tone: "светлый", color: "#e6e6dc", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/we-love-him-01.jpg"], photo: "img/sote/we-love-him-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка ВСЕГДА РАДУЙТЕСЬ",
+        slug: "vsegda-raduites",
+        variants: [
+          { tone: "светлый", color: "#c9d2e4", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/vsegda-raduites-01.jpg", "img/sote/vsegda-raduites-03.jpg", "img/sote/vsegda-raduites-04.jpg"], photo: "img/sote/vsegda-raduites-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка Зажги своё сердце",
+        slug: "zazhgi",
+        variants: [
+          { tone: "", color: "#f3efe6", size: "XS–5XL", price: "75 BYN", photo: "" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка ЛЮБОВЬ ЭТО",
+        slug: "lyubov-eto",
+        variants: [
+          { tone: "светлый", color: "#d8d6e0", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/lyubov-eto-01.jpg", "img/sote/lyubov-eto-03.jpg", "img/sote/lyubov-eto-04.jpg", "img/sote/lyubov-eto-02.jpg"], photo: "img/sote/lyubov-eto-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка Мир меняется твоим примером",
+        slug: "mir-menyaetsya",
+        variants: [
+          { tone: "бежевый", color: "#d4a574", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/mir-menyaetsya-01.jpg", "img/sote/mir-menyaetsya-03.jpg", "img/sote/mir-menyaetsya-04.jpg"], photo: "img/sote/mir-menyaetsya-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка То, что ты хочешь зажечь",
+        slug: "zazhech",
+        variants: [
+          { tone: "белый", color: "#f7f4ee", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/zazhech-01.jpg", "img/sote/zazhech-02.jpg", "img/sote/zazhech-04.jpg", "img/sote/zazhech-03.jpg"], photo: "img/sote/zazhech-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка Чистое сердце",
+        slug: "chistoe-serdce",
+        variants: [
+          { tone: "коричневый", color: "#7a5840", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/chistoe-serdce-01.jpg", "img/sote/chistoe-serdce-02.jpg", "img/sote/chistoe-serdce-03.jpg"], photo: "img/sote/chistoe-serdce-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Худи Stay Calm",
+        slug: "stay-calm",
+        variants: [
+          { tone: "голубой", color: "#9ec0de", size: "XS–3XL", price: "130 BYN", photos: ["img/sote/stay-calm-01.jpg", "img/sote/stay-calm-03.jpg", "img/sote/stay-calm-02.jpg"], photo: "img/sote/stay-calm-01.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Худи ЛЮБОВЬ",
+        slug: "lyubov",
+        variants: [
+          { tone: "розовый", color: "#d4a090", size: "XS–3XL", price: "135 BYN", photos: ["img/sote/lyubov-02.jpg", "img/sote/lyubov-03.jpg", "img/sote/lyubov-01.jpg"], photo: "img/sote/lyubov-02.jpg" }
+        ],
+        gender: "women"
+      },
+      {
+        name: "Футболка ДОВЕРЯЙ БОГУ",
+        slug: "doveryai-bogu",
+        variants: [
+          { tone: "светлый", color: "#f3efe6", size: "XS–5XL", price: "75 BYN", photos: ["img/sote/doveryai-bogu-01.jpg", "img/sote/doveryai-bogu-04.jpg", "img/sote/doveryai-bogu-02.jpg"], photo: "img/sote/doveryai-bogu-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Футболка Дитя Царя",
+        slug: "ditya-carya",
+        variants: [
+          { tone: "коричневый", color: "#8b684a", size: "S–5XL", price: "80 BYN", photos: ["img/sote/ditya-carya-01.jpg", "img/sote/ditya-carya-02.jpg", "img/sote/ditya-carya-03.jpg", "img/sote/ditya-carya-04.jpg"], photo: "img/sote/ditya-carya-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Футболка Оставил 99",
+        slug: "ostavil-99",
+        variants: [
+          { tone: "светлый", color: "#aeb8b4", size: "XS–5XL", price: "80 BYN", photos: ["img/sote/ostavil-99-01.jpg", "img/sote/ostavil-99-02.jpg", "img/sote/ostavil-99-03.jpg"], photo: "img/sote/ostavil-99-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Футболка Радуйтесь",
+        slug: "raduites",
+        variants: [
+          { tone: "светлый", color: "#cfc8d4", size: "XS–5XL", price: "80 BYN", photos: ["img/sote/raduites-01.jpg"], photo: "img/sote/raduites-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Худи Lion",
+        slug: "lion",
+        variants: [
+          { tone: "тёмный", color: "#1d2530", size: "XS–5XL", price: "120 BYN", photos: ["img/sote/lion-01.jpg"], photo: "img/sote/lion-01.jpg" }
+        ],
+        gender: "men"
+      },
+      {
+        name: "Худи Спасибо Богу",
+        slug: "spasibo-bogu",
+        variants: [
+          { tone: "тёмный", color: "#1c212e", size: "XS–5XL", price: "130 BYN", photos: ["img/sote/spasibo-bogu-01.jpg", "img/sote/spasibo-bogu-02.jpg", "img/sote/spasibo-bogu-03.jpg"], photo: "img/sote/spasibo-bogu-01.jpg" }
+        ],
+        gender: "men"
+      }
+    ]
+  },
+  fami: {
+    country: "Беларусь",
+    title: "fami.ly.by",
+    blurb: "Одежда для всей семьи",
+    note: "Ассортимент не собран. Цен в открытых подписях нет.",
+    items: [
+      ["#f4f1ea", "Футболка «Иисус — путь, истина, жизнь»", "", "", "put"],
+      ["#1c1c1c", "Футболка «Лев и Агнец»", "", "", "lev"],
+      ["#2f4f86", "Футболка JESUS", "", "", "jesus"]
+    ]
+  },
+  poputi: {
+    country: "Беларусь",
+    title: "Poputi_store",
+    blurb: "Христианская одежда",
+    note: "Ассортимент не собран.",
+    items: [
+      ["#c9b59a", "Новая коллекция", "", "", "novaya"]
+    ]
+  },
+  sola: {
+    country: "Беларусь",
+    title: "sola_minsk",
+    blurb: "Футболки и худи",
+    note: "Названия и текущие цены с christ.by. Буквенных размеров на сайте нет, посадка Oversize.",
+    source: "christ.by",
+    sourceHref: "https://christ.by/",
+    items: [
+      ["#2c2c2c", "Футболка Grace", "Oversize", "75 BYN", "grace"],
+      ["#2c2c2c", "Худи Grace", "Oversize", "120 BYN", "hudi-grace"],
+      ["#2c2c2c", "Футболка Jesus (леопард)", "Oversize", "80 BYN", "jesus-leopard"],
+      ["#2c2c2c", "Футболка Born Again Christian Dior", "Oversize", "75 BYN", "born-again"],
+      ["#2c2c2c", "Футболка Jesus The Only Way", "Oversize", "75 BYN", "jesus-the-only-way"],
+      ["#2c2c2c", "Футболка Jesus Saves", "Oversize", "75 BYN", "jesus-saves"],
+      ["#2c2c2c", "Худи Saved by Jesus", "Oversize", "120 BYN", "hudi-saved"],
+      ["#2c2c2c", "Худи Born Again Christian Dior", "Oversize", "120 BYN", "hudi-born-again"],
+      ["#2c2c2c", "Худи Jesus King", "Oversize", "120 BYN", "hudi-jesus-king"],
+      ["#2c2c2c", "Футболка Church isn’t complete without u", "Oversize", "75 BYN", "church"],
+      ["#2c2c2c", "Футболка He loved first", "Oversize", "80 BYN", "he-loved-first"],
+      ["#2c2c2c", "Футболка Even heroes need Jesus", "Oversize", "80 BYN", "even-heroes"],
+      ["#2c2c2c", "Футболка Yall need Jesus", "Oversize", "80 BYN", "yall-need-jesus"],
+      ["#2c2c2c", "Футболка My world revolves around the SON", "Oversize", "80 BYN", "my-world"],
+      ["#f3efe8", "Футболка Dude, He said we are going fishing", "Oversize", "75 BYN", "fishing"],
+      ["#f3efe8", "Футболка Jesus", "Oversize", "75 BYN", "jesus"],
+      ["#f3efe8", "Футболка I Love Jesus", "Oversize", "80 BYN", "i-love-jesus"],
+      ["#f3efe8", "Футболка Jesus is my jam", "Oversize", "80 BYN", "jam"],
+      ["#2c2c2c", "Футболка Give Me Jesus", "Oversize", "75 BYN", "give-me-jesus"],
+      ["#2c2c2c", "Футболка He is Rizzin", "Oversize", "85 BYN", "rizzin"],
+      ["#2c2c2c", "Футболка Faith Over Fear", "Oversize", "80 BYN", "faith-over-fear"],
+      ["#2c2c2c", "Худи Love Like Jesus", "Oversize", "110 BYN", "hudi-love"],
+      ["#2c2c2c", "Футболка Catch Up With Jesus", "Oversize", "85 BYN", "catch-up"],
+      ["#2c2c2c", "Футболка Jesus Loves Gamers", "Oversize", "85 BYN", "gamers"],
+      ["#2c2c2c", "Футболка Grace Grace", "Oversize", "80 BYN", "grace-grace"],
+      ["#2c2c2c", "Футболка Faith Can Move Mountains", "Oversize", "75 BYN", "mountains"],
+      ["#2c2c2c", "Футболка Made For More", "Oversize", "80 BYN", "made-for-more"]
+    ]
+  },
+  art: {
+    country: "Россия",
+    title: "art.brand.jesus.saves",
+    blurb: "Футболки",
+    note: "Показаны не все вещи.",
+    items: [
+      ["#d9d9d9", "Футболка Classic STRENGTH", "Оверсайз", "2000 ₽", "strength"],
+      ["#f7f4ee", "Футболка Women VICTORY", "Оверсайз", "2000 ₽", "victory"],
+      ["#fbfbfb", "Футболка HE'S MY DEFENDER", "Оверсайз", "2000 ₽", "defender"]
+    ]
+  }
+};
 
     const home = document.getElementById("home");
     const brand = document.getElementById("brand");
@@ -846,7 +950,38 @@
       return variant.photo ? [variant.photo] : [];
     }
 
-    function showProductPhoto(index) {
+    function syncGalleryChrome(photoEl) {
+      const cloth = document.getElementById("product-cloth");
+      const prev = document.getElementById("gallery-prev");
+      const next = document.getElementById("gallery-next");
+      const dots = document.getElementById("gallery-dots");
+      const many = currentPhotos.length > 1;
+      cloth.classList.add("has-photo");
+      cloth.classList.toggle("has-gallery", many);
+      cloth.tabIndex = 0;
+      prev.hidden = !many;
+      next.hidden = !many;
+      dots.hidden = !many;
+      dots.innerHTML = many
+        ? currentPhotos.map((_, i) => `<span class="${i === currentPhotoIndex ? "on" : ""}"></span>`).join("")
+        : "";
+      if (!lightbox.hidden) {
+        lightboxPhoto.alt = photoEl.alt;
+        const count = document.getElementById("lightbox-count");
+        count.hidden = !many;
+        count.textContent = many ? `${currentPhotoIndex + 1} / ${currentPhotos.length}` : "";
+        document.getElementById("lightbox-prev").hidden = !many;
+        document.getElementById("lightbox-next").hidden = !many;
+      }
+    }
+
+    function applyPhotoSrc(photoEl, src, alsoLightbox) {
+      photoEl.hidden = false;
+      photoEl.src = src;
+      if (alsoLightbox && !lightbox.hidden) lightboxPhoto.src = src;
+    }
+
+    function showProductPhoto(index, opts = {}) {
       const photoEl = document.getElementById("product-photo");
       const cloth = document.getElementById("product-cloth");
       const prev = document.getElementById("gallery-prev");
@@ -855,6 +990,8 @@
       if (!currentPhotos.length) {
         photoEl.hidden = true;
         photoEl.removeAttribute("src");
+        photoEl.classList.remove("is-fading");
+        lightboxPhoto.classList.remove("is-fading");
         cloth.classList.remove("has-photo", "has-gallery");
         cloth.tabIndex = -1;
         prev.hidden = true;
@@ -863,30 +1000,32 @@
         dots.innerHTML = "";
         return;
       }
-      currentPhotoIndex = (index + currentPhotos.length) % currentPhotos.length;
-      photoEl.hidden = false;
-      photoEl.src = currentPhotos[currentPhotoIndex];
-      photoEl.alt = currentItem
+      const nextIndex = (index + currentPhotos.length) % currentPhotos.length;
+      const src = currentPhotos[nextIndex];
+      const alt = currentItem
         ? `${currentItem.name}${currentItem.variants[currentTone]?.tone ? ", " + currentItem.variants[currentTone].tone : ""}`
         : "";
-      cloth.classList.add("has-photo");
-      cloth.classList.toggle("has-gallery", currentPhotos.length > 1);
-      cloth.tabIndex = 0;
-      const many = currentPhotos.length > 1;
-      prev.hidden = !many;
-      next.hidden = !many;
-      dots.hidden = !many;
-      dots.innerHTML = many
-        ? currentPhotos.map((_, i) => `<span class="${i === currentPhotoIndex ? "on" : ""}"></span>`).join("")
-        : "";
-      if (!lightbox.hidden) {
-        lightboxPhoto.src = currentPhotos[currentPhotoIndex];
-        lightboxPhoto.alt = photoEl.alt;
-        const count = document.getElementById("lightbox-count");
-        count.hidden = !many;
-        count.textContent = many ? `${currentPhotoIndex + 1} / ${currentPhotos.length}` : "";
-        document.getElementById("lightbox-prev").hidden = !many;
-        document.getElementById("lightbox-next").hidden = !many;
+      const animate = opts.animate && currentPhotos.length > 1 && photoEl.src && !photoEl.hidden;
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      currentPhotoIndex = nextIndex;
+      photoEl.alt = alt;
+      const finish = () => {
+        applyPhotoSrc(photoEl, src, true);
+        syncGalleryChrome(photoEl);
+        if (!animate || reduce) return;
+        requestAnimationFrame(() => {
+          photoEl.classList.remove("is-fading");
+          if (!lightbox.hidden) lightboxPhoto.classList.remove("is-fading");
+        });
+      };
+      if (animate && !reduce) {
+        photoEl.classList.add("is-fading");
+        if (!lightbox.hidden) lightboxPhoto.classList.add("is-fading");
+        window.setTimeout(finish, 180);
+      } else {
+        photoEl.classList.remove("is-fading");
+        lightboxPhoto.classList.remove("is-fading");
+        finish();
       }
     }
 
@@ -966,6 +1105,22 @@
       }, animate);
     }
 
+    function itemCard(id, item, source) {
+      const first = item.variants[0];
+      const price = cardPrice(item);
+      const photo = variantPhotos(first)[0] || first.photo || "";
+      const color = first.color;
+      const clothStyle = `--swatch:${color}`;
+      const cardStyle = photo
+        ? `--swatch:${color}`
+        : `--swatch:${color};background-image:linear-gradient(${color},${color})`;
+      const photoClass = photo ? " has-photo" : "";
+      const photoTag = photo
+        ? `<img src="${photo}" alt="${item.name}" loading="lazy" decoding="async">`
+        : "";
+      return `<a class="item" href="?${id}/${item.slug}" data-slug="${item.slug}" style="${cardStyle}"><div class="cloth${photoClass}" style="${clothStyle}">${photoTag}<span class="ph">Место под фото</span></div><span class="body"><b>${item.name}</b>${price ? `<span class="price">${price}</span>` : ""}${source}</span></a>`;
+    }
+
     function paintBrand(id, animate) {
       const data = brands[id];
       currentBrand = id;
@@ -980,21 +1135,24 @@
         note.textContent = data.note || "";
         note.hidden = !data.note;
         const source = data.source ? `<span>Источник: ${data.source}</span>` : "";
-        items.innerHTML = data.items.map((item) => {
-          const first = item.variants[0];
-          const price = cardPrice(item);
-          const photo = variantPhotos(first)[0] || first.photo || "";
-          const color = first.color;
-          const clothStyle = `--swatch:${color}`;
-          const cardStyle = photo
-            ? `--swatch:${color}`
-            : `--swatch:${color};background-image:linear-gradient(${color},${color})`;
-          const photoClass = photo ? " has-photo" : "";
-          const photoTag = photo
-            ? `<img src="${photo}" alt="${item.name}" loading="lazy" decoding="async">`
-            : "";
-          return `<a class="item" href="?${id}/${item.slug}" data-slug="${item.slug}" style="${cardStyle}"><div class="cloth${photoClass}" style="${clothStyle}">${photoTag}<span class="ph">Место под фото</span></div><span class="body"><b>${item.name}</b>${price ? `<span class="price">${price}</span>` : ""}${source}</span></a>`;
-        }).join("");
+        const women = data.items.filter((item) => item.gender === "women");
+        const men = data.items.filter((item) => item.gender === "men");
+        const other = data.items.filter((item) => item.gender !== "women" && item.gender !== "men");
+        if (women.length || men.length) {
+          items.innerHTML = [
+            women.length
+              ? `<div class="gender-block" data-gender="women"><h2>Женское</h2><div class="items">${women.map((item) => itemCard(id, item, source)).join("")}</div></div>`
+              : "",
+            men.length
+              ? `<div class="gender-block" data-gender="men"><h2>Мужское</h2><div class="items">${men.map((item) => itemCard(id, item, source)).join("")}</div></div>`
+              : "",
+            other.length
+              ? `<div class="gender-block"><div class="items">${other.map((item) => itemCard(id, item, source)).join("")}</div></div>`
+              : ""
+          ].join("");
+        } else {
+          items.innerHTML = data.items.map((item) => itemCard(id, item, source)).join("");
+        }
         home.classList.remove("on");
         product.classList.remove("on");
         brand.classList.add("on");
@@ -1163,7 +1321,7 @@
     }
     function stepPhoto(delta) {
       if (currentPhotos.length < 2) return;
-      showProductPhoto(currentPhotoIndex + delta);
+      showProductPhoto(currentPhotoIndex + delta, { animate: true });
     }
     document.getElementById("gallery-prev").addEventListener("click", (event) => {
       event.stopPropagation();
