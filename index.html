@@ -463,10 +463,10 @@
           <span><b>sote_m</b></span>
           <span class="go">Смотреть</span>
         </button>
-        <button class="brand wait" data-brand="fami">
-          <span class="swatch" style="background-color:#f4f1ea"></span>
+        <button class="brand" data-brand="fami">
+          <img class="swatch" src="img/fami/avatar.jpg" alt="" width="64" height="64">
           <span><b>fami.ly.by</b></span>
-          <span class="go">Открыть</span>
+          <span class="go">Смотреть</span>
         </button>
         <button class="brand wait" data-brand="poputi">
           <span class="swatch" style="background-color:#c9b59a"></span>
@@ -888,12 +888,40 @@
   fami: {
     country: "Беларусь",
     title: "fami.ly.by",
-    blurb: "Одежда для всей семьи",
-    note: "Ассортимент не собран. Цен в открытых подписях нет.",
+    blurb: "",
+    note: "Цены в открытых подписях Instagram нет. Фото с Instagram @fami.ly.by.",
+    source: "Instagram @fami.ly.by",
+    sourceHref: "https://www.instagram.com/fami.ly.by/",
     items: [
-      ["#f4f1ea", "Футболка «Иисус — путь, истина, жизнь»", "", "", "put"],
-      ["#1c1c1c", "Футболка «Лев и Агнец»", "", "", "lev"],
-      ["#2f4f86", "Футболка JESUS", "", "", "jesus"]
+      {
+        name: "Футболка «Иисус — путь, истина, жизнь»",
+        slug: "put",
+        variants: [
+          { tone: "белый", color: "#f4f1ea", size: "", price: "", photos: ["img/fami/put-white-01.jpg"], photo: "img/fami/put-white-01.jpg" },
+          { tone: "чёрный", color: "#1c1c1c", size: "", price: "", photos: ["img/fami/put-black-01.jpg"], photo: "img/fami/put-black-01.jpg" }
+        ]
+      },
+      {
+        name: "Футболка «Лев и Агнец»",
+        slug: "lev-agnets",
+        variants: [
+          { tone: "чёрный", color: "#1c1c1c", size: "", price: "", photos: ["img/fami/lev-agnets-01.jpg"], photo: "img/fami/lev-agnets-01.jpg" }
+        ]
+      },
+      {
+        name: "Футболка JESUS",
+        slug: "jesus",
+        variants: [
+          { tone: "чёрный", color: "#1c1c1c", size: "", price: "", photos: ["img/fami/jesus-lion-01.jpg"], photo: "img/fami/jesus-lion-01.jpg" }
+        ]
+      },
+      {
+        name: "Футболка «Бог спустился, чтобы поднялись мы»",
+        slug: "bog-spustilsya",
+        variants: [
+          { tone: "чёрный", color: "#1c1c1c", size: "", price: "", photos: ["img/fami/glavnoe-01.jpg"], photo: "img/fami/glavnoe-01.jpg" }
+        ]
+      }
     ]
   },
   poputi: {
