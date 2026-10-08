@@ -49,8 +49,10 @@
     }
     .mark span { letter-spacing: 0; font-weight: 400; font-size: 13px; color: var(--muted); margin-left: 8px; }
     .menu { position: relative; }
-    #countries-btn { font-size: 15px; }
-    #countries-btn[aria-expanded="true"] { color: var(--accent); }
+    #countries-btn,
+    #catalog-btn { font-size: 15px; }
+    #countries-btn[aria-expanded="true"],
+    #catalog-btn[aria-expanded="true"] { color: var(--accent); }
     .menu-list {
       position: absolute;
       top: calc(100% + 10px);
@@ -134,10 +136,30 @@
     }
     .tone.on { outline: 2px solid var(--ink); outline-offset: 2px; }
     .items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 28px 0 40px; }
-    #items:has(.gender-block) {
-      display: block;
-      padding: 8px 0 32px;
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 18px 0 0;
     }
+    .filters[hidden] { display: none; }
+    .filters button {
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      font-size: 14px;
+      line-height: 1.3;
+      color: var(--muted);
+    }
+    .filters button:hover { border-color: #cfc6bb; color: var(--ink); }
+    .filters button.on {
+      border-color: var(--ink);
+      color: var(--ink);
+      background: #f3efe8;
+    }
+    .catalog-group { margin-top: 8px; }
+    .catalog-group h2 { margin: 28px 0 0; }
+    .catalog-group .items { padding-top: 14px; padding-bottom: 8px; }
     .item {
       background-color: var(--paper);
       background-image: linear-gradient(var(--swatch), var(--swatch));
@@ -306,13 +328,6 @@
     .lightbox-nav.next { right: 18px; }
     .lightbox-nav:hover { background: rgba(255,255,255,0.24); }
     .lightbox-nav:active { transform: translateY(-50%) scale(0.96); }
-    .gender-block { margin-top: 8px; }
-    .gender-block h2 {
-      margin: 24px 0 0;
-      font-size: 18px;
-      letter-spacing: -0.02em;
-    }
-    .gender-block .items { padding-top: 14px; padding-bottom: 12px; }
     .lightbox-count {
       position: absolute;
       left: 50%;
@@ -411,6 +426,14 @@
           <button type="button" data-slug="russia">Россия</button>
         </div>
       </div>
+      <div class="menu">
+        <button type="button" id="catalog-btn" aria-expanded="false" aria-controls="catalog-menu">Каталог ▾</button>
+        <div class="menu-list" id="catalog-menu" hidden>
+          <button type="button" data-catalog="all">Всё</button>
+          <button type="button" data-catalog="women">Женское</button>
+          <button type="button" data-catalog="men">Мужское</button>
+        </div>
+      </div>
       <nav class="links">
         <a href="https://t.me/JHVHGOeL">Telegram</a>
         <a href="https://www.instagram.com/jehovah_goel/">Instagram</a>
@@ -480,7 +503,26 @@
       </div>
       <p class="stock" id="note"></p>
       <p class="ahead">Вещь выбираете здесь. Оформление заказа на сайте ещё не включено.</p>
+      <div class="filters" id="brand-filters" hidden></div>
       <div class="items" id="items"></div>
+    </section>
+
+    <section id="catalog" class="view">
+      <div class="crumbs">
+        <button type="button" id="catalog-crumb-all">Все бренды</button>
+        <span>›</span>
+        <span class="here" id="catalog-crumb"></span>
+      </div>
+      <div class="brand-head">
+        <h1 id="catalog-title">Каталог</h1>
+        <p class="blurb" id="catalog-blurb">Одежда всех брендов в одном месте.</p>
+      </div>
+      <div class="filters" id="catalog-filters">
+        <button type="button" data-catalog-filter="all">Всё</button>
+        <button type="button" data-catalog-filter="women">Женское</button>
+        <button type="button" data-catalog-filter="men">Мужское</button>
+      </div>
+      <div id="catalog-body"></div>
     </section>
 
     <section id="product" class="view">
@@ -915,15 +957,21 @@
     const home = document.getElementById("home");
     const brand = document.getElementById("brand");
     const product = document.getElementById("product");
+    const catalog = document.getElementById("catalog");
     const items = document.getElementById("items");
+    const catalogBody = document.getElementById("catalog-body");
     let currentBrand = null;
     let currentItem = null;
     let currentTone = 0;
     let currentPhotos = [];
     let currentPhotoIndex = 0;
+    let brandGenderFilter = "all";
     const stage = document.getElementById("stage");
     const menuBtn = document.getElementById("countries-btn");
     const menuList = document.getElementById("country-menu");
+    const catalogBtn = document.getElementById("catalog-btn");
+    const catalogMenu = document.getElementById("catalog-menu");
+    const genderLabel = { all: "Всё", women: "Женское", men: "Мужское" };
 
     Object.values(brands).forEach((data) => {
       data.items = data.items.map((item) => {
@@ -1040,12 +1088,48 @@
     function showHome() {
       brand.classList.remove("on");
       product.classList.remove("on");
+      catalog.classList.remove("on");
       home.classList.add("on");
     }
 
-    function closeMenu() {
+    function closeMenus() {
       menuList.hidden = true;
       menuBtn.setAttribute("aria-expanded", "false");
+      catalogMenu.hidden = true;
+      catalogBtn.setAttribute("aria-expanded", "false");
+    }
+
+    function closeMenu() {
+      closeMenus();
+    }
+
+    function toggleMenu(btn, list) {
+      const willOpen = list.hidden;
+      closeMenus();
+      if (willOpen) {
+        list.hidden = false;
+        btn.setAttribute("aria-expanded", "true");
+      }
+    }
+
+    function brandHasGender(data) {
+      return data.items.some((item) => item.gender === "women" || item.gender === "men");
+    }
+
+    function filterItemsByGender(list, gender) {
+      if (!gender || gender === "all") return list;
+      return list.filter((item) => item.gender === gender);
+    }
+
+    function catalogEntries(gender) {
+      return Object.entries(brands)
+        .map(([id, data]) => {
+          const filtered = gender === "all"
+            ? data.items.filter((item) => item && item.slug && Array.isArray(item.variants))
+            : data.items.filter((item) => item && item.slug && item.gender === gender);
+          return filtered.length ? { id, data, items: filtered } : null;
+        })
+        .filter(Boolean);
     }
 
     function reveal(update, animate) {
@@ -1118,12 +1202,27 @@
       const photoTag = photo
         ? `<img src="${photo}" alt="${item.name}" loading="lazy" decoding="async">`
         : "";
-      return `<a class="item" href="?${id}/${item.slug}" data-slug="${item.slug}" style="${cardStyle}"><div class="cloth${photoClass}" style="${clothStyle}">${photoTag}<span class="ph">Место под фото</span></div><span class="body"><b>${item.name}</b>${price ? `<span class="price">${price}</span>` : ""}${source}</span></a>`;
+      return `<a class="item" href="?${id}/${item.slug}" data-brand="${id}" data-slug="${item.slug}" style="${cardStyle}"><div class="cloth${photoClass}" style="${clothStyle}">${photoTag}<span class="ph">Место под фото</span></div><span class="body"><b>${item.name}</b>${price ? `<span class="price">${price}</span>` : ""}${source}</span></a>`;
+    }
+
+    function renderBrandFilters(data) {
+      const bar = document.getElementById("brand-filters");
+      if (!brandHasGender(data)) {
+        bar.hidden = true;
+        bar.innerHTML = "";
+        brandGenderFilter = "all";
+        return;
+      }
+      bar.hidden = false;
+      bar.innerHTML = ["all", "women", "men"].map((key) =>
+        `<button type="button" data-brand-filter="${key}" class="${brandGenderFilter === key ? "on" : ""}">${genderLabel[key]}</button>`
+      ).join("");
     }
 
     function paintBrand(id, animate) {
       const data = brands[id];
       currentBrand = id;
+      if (!brandHasGender(data)) brandGenderFilter = "all";
       reveal(() => {
         document.getElementById("crumb-country").textContent = data.country;
         document.getElementById("crumb-brand").textContent = data.title;
@@ -1135,27 +1234,40 @@
         note.textContent = data.note || "";
         note.hidden = !data.note;
         const source = data.source ? `<span>Источник: ${data.source}</span>` : "";
-        const women = data.items.filter((item) => item.gender === "women");
-        const men = data.items.filter((item) => item.gender === "men");
-        const other = data.items.filter((item) => item.gender !== "women" && item.gender !== "men");
-        if (women.length || men.length) {
-          items.innerHTML = [
-            women.length
-              ? `<div class="gender-block" data-gender="women"><h2>Женское</h2><div class="items">${women.map((item) => itemCard(id, item, source)).join("")}</div></div>`
-              : "",
-            men.length
-              ? `<div class="gender-block" data-gender="men"><h2>Мужское</h2><div class="items">${men.map((item) => itemCard(id, item, source)).join("")}</div></div>`
-              : "",
-            other.length
-              ? `<div class="gender-block"><div class="items">${other.map((item) => itemCard(id, item, source)).join("")}</div></div>`
-              : ""
-          ].join("");
-        } else {
-          items.innerHTML = data.items.map((item) => itemCard(id, item, source)).join("");
-        }
+        renderBrandFilters(data);
+        const list = filterItemsByGender(data.items, brandGenderFilter);
+        items.innerHTML = list.length
+          ? list.map((item) => itemCard(id, item, source)).join("")
+          : `<p class="blurb">В этом фильтре пока нет вещей.</p>`;
         home.classList.remove("on");
         product.classList.remove("on");
+        catalog.classList.remove("on");
         brand.classList.add("on");
+      }, animate);
+    }
+
+    function paintCatalog(gender, animate) {
+      const g = genderLabel[gender] ? gender : "all";
+      reveal(() => {
+        document.getElementById("catalog-crumb").textContent = g === "all" ? "Каталог" : genderLabel[g];
+        document.getElementById("catalog-title").textContent = g === "all" ? "Каталог" : genderLabel[g];
+        document.getElementById("catalog-blurb").textContent = g === "all"
+          ? "Одежда всех брендов в одном месте."
+          : `${genderLabel[g]} от всех брендов.`;
+        document.querySelectorAll("#catalog-filters [data-catalog-filter]").forEach((btn) => {
+          btn.classList.toggle("on", btn.dataset.catalogFilter === g);
+        });
+        const groups = catalogEntries(g);
+        catalogBody.innerHTML = groups.length
+          ? groups.map(({ id, data, items: list }) => {
+              const source = data.source ? `<span>Источник: ${data.source}</span>` : "";
+              return `<div class="catalog-group"><h2>${data.title}</h2><div class="items">${list.map((item) => itemCard(id, item, source)).join("")}</div></div>`;
+            }).join("")
+          : `<p class="blurb">Пока нет вещей в этом разделе.</p>`;
+        home.classList.remove("on");
+        brand.classList.remove("on");
+        product.classList.remove("on");
+        catalog.classList.add("on");
       }, animate);
     }
 
@@ -1211,6 +1323,7 @@
         fillVariant(data, item, 0);
         home.classList.remove("on");
         brand.classList.remove("on");
+        catalog.classList.remove("on");
         product.classList.add("on");
       }, animate);
     }
@@ -1223,9 +1336,14 @@
 
     function apply(animate) {
       const [first, second] = currentRoute().split("/").filter(Boolean);
-      closeMenu();
+      closeMenus();
       if (!first) {
         paintCountry("all", animate);
+        return;
+      }
+      if (first === "catalog") {
+        const gender = second === "women" || second === "men" ? second : "all";
+        paintCatalog(gender, animate);
         return;
       }
       if (countryName[first] && !second) {
@@ -1258,37 +1376,68 @@
 
     menuBtn.addEventListener("click", (event) => {
       event.stopPropagation();
-      const willOpen = menuList.hidden;
-      menuList.hidden = !willOpen;
-      menuBtn.setAttribute("aria-expanded", String(willOpen));
+      toggleMenu(menuBtn, menuList);
+    });
+    catalogBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleMenu(catalogBtn, catalogMenu);
     });
     menuList.addEventListener("click", (event) => event.stopPropagation());
-    document.addEventListener("click", closeMenu);
+    catalogMenu.addEventListener("click", (event) => event.stopPropagation());
+    document.addEventListener("click", closeMenus);
 
-    document.querySelectorAll("[data-slug]").forEach((button) => {
-      button.addEventListener("click", () => navigate("#" + button.dataset.slug));
+    document.querySelectorAll("#country-menu [data-slug]").forEach((button) => {
+      button.addEventListener("click", () => navigate(button.dataset.slug));
     });
-    document.getElementById("logo").addEventListener("click", () => navigate("#"));
-    document.getElementById("home-all").addEventListener("click", () => navigate("#"));
-    document.getElementById("crumb-all").addEventListener("click", () => navigate("#"));
+    document.querySelectorAll("#catalog-menu [data-catalog]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const value = button.dataset.catalog;
+        navigate(value === "all" ? "catalog" : `catalog/${value}`);
+      });
+    });
+    document.getElementById("logo").addEventListener("click", () => navigate(""));
+    document.getElementById("home-all").addEventListener("click", () => navigate(""));
+    document.getElementById("crumb-all").addEventListener("click", () => navigate(""));
+    document.getElementById("catalog-crumb-all").addEventListener("click", () => navigate(""));
     document.getElementById("crumb-country").addEventListener("click", () => {
-      navigate("#" + countrySlug[document.getElementById("crumb-country").textContent]);
+      navigate(countrySlug[document.getElementById("crumb-country").textContent]);
     });
-    document.querySelectorAll("[data-brand]").forEach((button) => {
-      button.addEventListener("click", () => navigate("#" + button.dataset.brand));
+    document.querySelectorAll("#home [data-brand]").forEach((button) => {
+      button.addEventListener("click", () => {
+        brandGenderFilter = "all";
+        navigate(button.dataset.brand);
+      });
     });
-    items.addEventListener("click", (event) => {
+    function openItemCard(event) {
       const card = event.target.closest("a.item");
       if (!card) return;
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
       event.preventDefault();
-      navigate(`${currentBrand}/${card.dataset.slug}`);
+      const brandId = card.dataset.brand || currentBrand;
+      navigate(`${brandId}/${card.dataset.slug}`);
+    }
+    items.addEventListener("click", openItemCard);
+    catalogBody.addEventListener("click", openItemCard);
+    document.getElementById("brand-filters").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-brand-filter]");
+      if (!button || !currentBrand) return;
+      brandGenderFilter = button.dataset.brandFilter;
+      paintBrand(currentBrand, false);
     });
-    document.getElementById("product-all").addEventListener("click", () => navigate("#"));
+    document.getElementById("catalog-filters").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-catalog-filter]");
+      if (!button) return;
+      const value = button.dataset.catalogFilter;
+      navigate(value === "all" ? "catalog" : `catalog/${value}`);
+    });
+    document.getElementById("product-all").addEventListener("click", () => navigate(""));
     document.getElementById("product-country").addEventListener("click", () => {
-      navigate("#" + countrySlug[document.getElementById("product-country").textContent]);
+      navigate(countrySlug[document.getElementById("product-country").textContent]);
     });
-    document.getElementById("product-brand").addEventListener("click", () => navigate("#" + currentBrand));
+    document.getElementById("product-brand").addEventListener("click", () => {
+      brandGenderFilter = "all";
+      navigate(currentBrand);
+    });
     document.getElementById("color-options").addEventListener("click", (event) => {
       const button = event.target.closest(".tone");
       if (!button || !currentItem || !currentBrand) return;
