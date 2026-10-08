@@ -904,41 +904,234 @@
       ["#c9b59a", "Новая коллекция", "", "", "novaya"]
     ]
   },
-  sola: {
+sola: {
     country: "Беларусь",
     title: "sola_minsk",
     blurb: "Футболки и худи",
-    note: "Названия и текущие цены с christ.by. Буквенных размеров на сайте нет, посадка Oversize.",
+    note: "Названия, цвета и текущие цены с christ.by от 4 октября 2026. Буквенных размеров на сайте нет, посадка Oversize. Фото пока не добавлены.",
     source: "christ.by",
     sourceHref: "https://christ.by/",
     items: [
-      ["#2c2c2c", "Футболка Grace", "Oversize", "75 BYN", "grace"],
-      ["#2c2c2c", "Худи Grace", "Oversize", "120 BYN", "hudi-grace"],
-      ["#2c2c2c", "Футболка Jesus (леопард)", "Oversize", "80 BYN", "jesus-leopard"],
-      ["#2c2c2c", "Футболка Born Again Christian Dior", "Oversize", "75 BYN", "born-again"],
-      ["#2c2c2c", "Футболка Jesus The Only Way", "Oversize", "75 BYN", "jesus-the-only-way"],
-      ["#2c2c2c", "Футболка Jesus Saves", "Oversize", "75 BYN", "jesus-saves"],
-      ["#2c2c2c", "Худи Saved by Jesus", "Oversize", "120 BYN", "hudi-saved"],
-      ["#2c2c2c", "Худи Born Again Christian Dior", "Oversize", "120 BYN", "hudi-born-again"],
-      ["#2c2c2c", "Худи Jesus King", "Oversize", "120 BYN", "hudi-jesus-king"],
-      ["#2c2c2c", "Футболка Church isn’t complete without u", "Oversize", "75 BYN", "church"],
-      ["#2c2c2c", "Футболка He loved first", "Oversize", "80 BYN", "he-loved-first"],
-      ["#2c2c2c", "Футболка Even heroes need Jesus", "Oversize", "80 BYN", "even-heroes"],
-      ["#2c2c2c", "Футболка Yall need Jesus", "Oversize", "80 BYN", "yall-need-jesus"],
-      ["#2c2c2c", "Футболка My world revolves around the SON", "Oversize", "80 BYN", "my-world"],
-      ["#f3efe8", "Футболка Dude, He said we are going fishing", "Oversize", "75 BYN", "fishing"],
-      ["#f3efe8", "Футболка Jesus", "Oversize", "75 BYN", "jesus"],
-      ["#f3efe8", "Футболка I Love Jesus", "Oversize", "80 BYN", "i-love-jesus"],
-      ["#f3efe8", "Футболка Jesus is my jam", "Oversize", "80 BYN", "jam"],
-      ["#2c2c2c", "Футболка Give Me Jesus", "Oversize", "75 BYN", "give-me-jesus"],
-      ["#2c2c2c", "Футболка He is Rizzin", "Oversize", "85 BYN", "rizzin"],
-      ["#2c2c2c", "Футболка Faith Over Fear", "Oversize", "80 BYN", "faith-over-fear"],
-      ["#2c2c2c", "Худи Love Like Jesus", "Oversize", "110 BYN", "hudi-love"],
-      ["#2c2c2c", "Футболка Catch Up With Jesus", "Oversize", "85 BYN", "catch-up"],
-      ["#2c2c2c", "Футболка Jesus Loves Gamers", "Oversize", "85 BYN", "gamers"],
-      ["#2c2c2c", "Футболка Grace Grace", "Oversize", "80 BYN", "grace-grace"],
-      ["#2c2c2c", "Футболка Faith Can Move Mountains", "Oversize", "75 BYN", "mountains"],
-      ["#2c2c2c", "Футболка Made For More", "Oversize", "80 BYN", "made-for-more"]
+        {
+          name: "Футболка Grace",
+          slug: "grace",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "75 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Jesus (леопард)",
+          slug: "jesus-leopard",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "80 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Born Again Christian Dior",
+          slug: "born-again",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "75 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Jesus The Only Way",
+          slug: "jesus-the-only-way",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "75 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Jesus Saves",
+          slug: "jesus-saves",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "75 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Church isn’t complete without u",
+          slug: "church",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "75 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка He loved first",
+          slug: "he-loved-first",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "80 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Even heroes need Jesus",
+          slug: "even-heroes",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "80 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Yall need Jesus",
+          slug: "yall-need-jesus",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "80 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка My world revolves around the SON",
+          slug: "my-world",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "80 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Dude, He said we are going fishing",
+          slug: "fishing",
+          variants: [
+            { tone: "бежевый", color: "#d6c6b4", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "белый", color: "#f7f4ee", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "молочный", color: "#f3efe8", size: "Oversize", price: "75 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Jesus",
+          slug: "jesus",
+          variants: [
+            { tone: "бежевый", color: "#d6c6b4", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "белый", color: "#f7f4ee", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "молочный", color: "#f3efe8", size: "Oversize", price: "75 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка I Love Jesus",
+          slug: "i-love-jesus",
+          variants: [
+            { tone: "бежевый", color: "#d6c6b4", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "белый", color: "#f7f4ee", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "молочный", color: "#f3efe8", size: "Oversize", price: "80 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Jesus is my jam",
+          slug: "jam",
+          variants: [
+            { tone: "бежевый", color: "#d6c6b4", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "белый", color: "#f7f4ee", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "молочный", color: "#f3efe8", size: "Oversize", price: "80 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Give Me Jesus",
+          slug: "give-me-jesus",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "75 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка He is Rizzin",
+          slug: "rizzin",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "85 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "85 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Faith Over Fear",
+          slug: "faith-over-fear",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "80 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Catch Up With Jesus",
+          slug: "catch-up",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "85 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "85 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Jesus Loves Gamers",
+          slug: "gamers",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "85 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "85 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Grace Grace",
+          slug: "grace-grace",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "80 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Faith Can Move Mountains",
+          slug: "mountains",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "75 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "75 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Футболка Made For More",
+          slug: "made-for-more",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "80 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "80 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Худи Grace",
+          slug: "hudi-grace",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "120 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "120 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Худи Saved by Jesus",
+          slug: "hudi-saved",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "120 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "120 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Худи Born Again Christian Dior",
+          slug: "hudi-born-again",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "120 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "120 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Худи Jesus King",
+          slug: "hudi-jesus-king",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "120 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "120 BYN", photo: "" }
+          ]
+        },
+        {
+          name: "Худи Love Like Jesus",
+          slug: "hudi-love",
+          variants: [
+            { tone: "серый", color: "#8a8a8a", size: "Oversize", price: "110 BYN", photo: "" },
+            { tone: "чёрный", color: "#2c2c2c", size: "Oversize", price: "110 BYN", photo: "" }
+          ]
+        }
     ]
   },
   art: {
