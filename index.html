@@ -97,7 +97,7 @@
       padding: 12px;
       margin-top: 10px;
     }
-    .swatch { display: block; width: 64px; height: 64px; }
+    .swatch { display: block; width: 64px; height: 64px; object-fit: cover; background: var(--line); }
     .brand b { display: block; font-size: 17px; line-height: 1.35; }
     .brand small { display: block; margin-top: 5px; color: var(--muted); font-size: 14px; line-height: 1.45; }
     .go { color: var(--accent); font-size: 14px; padding-right: 4px; }
@@ -454,7 +454,7 @@
       <div data-country-group="Беларусь">
         <h2>Беларусь</h2>
         <button class="brand" data-brand="godderob">
-          <span class="swatch" style="background-color:#efe8dc"></span>
+          <img class="swatch" src="img/godderob/avatar.jpg" alt="" width="64" height="64">
           <span><b>godderob</b><small>Свитшоты, футболки и полузипы</small></span>
           <span class="go">Смотреть</span>
         </button>
@@ -658,7 +658,8 @@
         slug: "name",
         variants: [
           { tone: "графитовый", color: "#4a474e", size: "S, M, L, XL", price: "135 BYN", photos: ["img/godderob/name-graphite-01.jpg", "img/godderob/name-graphite-02.jpg"], photo: "img/godderob/name-graphite-01.jpg" },
-          { tone: "бордовый", color: "#6e3c41", size: "S, M, L, XL, 2XL", price: "", photos: ["img/godderob/name-burgundy-01.jpg"], photo: "img/godderob/name-burgundy-01.jpg" }
+          { tone: "бордовый", color: "#6e3c41", size: "S, M, L, XL, 2XL", price: "", photos: ["img/godderob/name-burgundy-01.jpg"], photo: "img/godderob/name-burgundy-01.jpg" },
+          { tone: "белый", color: "#f7f4ee", size: "", price: "", photos: ["img/godderob/name-white-01.jpg"], photo: "img/godderob/name-white-01.jpg" }
         ],
         gender: "women"
       },
