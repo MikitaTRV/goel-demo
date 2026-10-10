@@ -218,6 +218,26 @@
     .item b { display: block; font-size: 16px; line-height: 1.4; }
     .item span { display: block; color: var(--muted); font-size: 14px; line-height: 1.45; margin-top: 6px; }
     .item .price { color: var(--ink); margin-top: 10px; line-height: 1.4; }
+    .card-meta { margin-top: 12px; display: grid; gap: 10px; }
+    .card-colors { display: flex; flex-wrap: wrap; gap: 6px; }
+    .card-colors .tone {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: var(--tone);
+    }
+    .card-sizes { display: flex; flex-wrap: wrap; gap: 6px; }
+    .card-sizes .size {
+      min-width: 34px;
+      padding: 5px 8px;
+      border: 1px solid var(--line);
+      font-size: 12px;
+      line-height: 1.2;
+      text-align: center;
+      color: var(--ink);
+    }
+    .card-size-range { color: var(--muted); font-size: 13px; line-height: 1.4; }
     .stock { margin: 22px 0 0; font-size: 15px; line-height: 1.5; }
     .stock[hidden] { display: none; }
     .ahead { margin: 8px 0 0; font-size: 15px; line-height: 1.5; }
@@ -395,9 +415,6 @@
     }
     .size.on { background: var(--ink); color: #fff; border-color: var(--ink); }
     .product-price { margin: 16px 0 0; font-size: 18px; }
-    .source { margin: 14px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
-    .source[hidden] { display: none; }
-    .source a { color: inherit; }
     .buy {
       display: inline-block;
       margin-top: 22px;
@@ -555,7 +572,6 @@
             <div id="size-options"></div>
           </div>
           <p class="product-price" id="product-price" hidden></p>
-          <p class="source" id="product-source" hidden></p>
           <button type="button" class="buy">Заказать</button>
           <p class="order" id="choice">Оформление заказа ещё не включено.</p>
         </div>
@@ -889,9 +905,7 @@
     country: "Беларусь",
     title: "fami.ly.by",
     blurb: "",
-    note: "Цены в открытых подписях Instagram нет. Фото с Instagram @fami.ly.by.",
-    source: "Instagram @fami.ly.by",
-    sourceHref: "https://www.instagram.com/fami.ly.by/",
+    note: "Цены в открытых подписях Instagram нет.",
     items: [
       {
         name: "Футболка «Иисус — путь, истина, жизнь»",
@@ -937,9 +951,7 @@
     country: "Беларусь",
     title: "sola_minsk",
     blurb: "Футболки и худи с печатью",
-    note: "Цены и цвета с christ.by. Фото с витрины бренда / Instagram @sola_minsk. Буквенных размеров нет, посадка Oversize. Печать на готовых футболках и худи.",
-    source: "Instagram @sola_minsk",
-    sourceHref: "https://www.instagram.com/sola_minsk/",
+    note: "Цены и цвета с christ.by. Буквенных размеров нет, посадка Oversize. Печать на готовых футболках и худи.",
     items: [
         {
           name: "Футболка Grace",
@@ -1411,7 +1423,32 @@
       }, animate);
     }
 
-    function itemCard(id, item, source) {
+    function cardColors(item) {
+      const seen = new Set();
+      const tones = item.variants.filter((variant) => {
+        const key = `${variant.color}|${variant.tone || ""}`;
+        if (!variant.color || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      if (!tones.length) return "";
+      return `<div class="card-colors">${tones.map((variant) =>
+        `<i class="tone" style="--tone:${variant.color}" title="${variant.tone || "Цвет"}" aria-label="${variant.tone || "Цвет"}"></i>`
+      ).join("")}</div>`;
+    }
+
+    function cardSizes(item) {
+      const listed = [...new Set(item.variants.flatMap((variant) => listedSizes(variant.size)))];
+      if (listed.length) {
+        return `<div class="card-sizes">${listed.map((size) => `<span class="size">${size}</span>`).join("")}</div>`;
+      }
+      const raw = [...new Set(item.variants.map((variant) => variant.size).filter(Boolean))];
+      if (!raw.length) return "";
+      if (raw.length === 1) return `<div class="card-size-range">${rangeLabel(raw[0])}</div>`;
+      return `<div class="card-sizes">${raw.map((size) => `<span class="size">${size}</span>`).join("")}</div>`;
+    }
+
+    function itemCard(id, item) {
       const first = item.variants[0];
       const price = cardPrice(item);
       const photo = variantPhotos(first)[0] || first.photo || "";
@@ -1424,7 +1461,8 @@
       const photoTag = photo
         ? `<img src="${photo}" alt="${item.name}" loading="lazy" decoding="async">`
         : "";
-      return `<a class="item" href="?${id}/${item.slug}" data-brand="${id}" data-slug="${item.slug}" style="${cardStyle}"><div class="cloth${photoClass}" style="${clothStyle}">${photoTag}<span class="ph">Место под фото</span></div><span class="body"><b>${item.name}</b>${price ? `<span class="price">${price}</span>` : ""}${source}</span></a>`;
+      const meta = `${cardColors(item)}${cardSizes(item)}`;
+      return `<a class="item" href="?${id}/${item.slug}" data-brand="${id}" data-slug="${item.slug}" style="${cardStyle}"><div class="cloth${photoClass}" style="${clothStyle}">${photoTag}<span class="ph">Место под фото</span></div><span class="body"><b>${item.name}</b>${meta ? `<div class="card-meta">${meta}</div>` : ""}${price ? `<span class="price">${price}</span>` : ""}</span></a>`;
     }
 
     function renderBrandFilters(data) {
@@ -1455,11 +1493,10 @@
         const note = document.getElementById("note");
         note.textContent = data.note || "";
         note.hidden = !data.note;
-        const source = data.source ? `<span>Источник: ${data.source}</span>` : "";
         renderBrandFilters(data);
         const list = filterItemsByGender(data.items, brandGenderFilter);
         items.innerHTML = list.length
-          ? list.map((item) => itemCard(id, item, source)).join("")
+          ? list.map((item) => itemCard(id, item)).join("")
           : `<p class="blurb">В этом фильтре пока нет вещей.</p>`;
         home.classList.remove("on");
         product.classList.remove("on");
@@ -1481,10 +1518,9 @@
         });
         const groups = catalogEntries(g);
         catalogBody.innerHTML = groups.length
-          ? groups.map(({ id, data, items: list }) => {
-              const source = data.source ? `<span>Источник: ${data.source}</span>` : "";
-              return `<div class="catalog-group"><h2>${data.title}</h2><div class="items">${list.map((item) => itemCard(id, item, source)).join("")}</div></div>`;
-            }).join("")
+          ? groups.map(({ id, data, items: list }) =>
+              `<div class="catalog-group"><h2>${data.title}</h2><div class="items">${list.map((item) => itemCard(id, item)).join("")}</div></div>`
+            ).join("")
           : `<p class="blurb">Пока нет вещей в этом разделе.</p>`;
         home.classList.remove("on");
         brand.classList.remove("on");
@@ -1502,16 +1538,14 @@
       currentPhotos = variantPhotos(variant);
       showProductPhoto(0);
       const colors = document.getElementById("product-colors");
-      const many = item.variants.length > 1;
-      colors.hidden = !many;
+      const toneOptions = item.variants.filter((option) => option.color);
+      colors.hidden = toneOptions.length === 0;
       document.getElementById("color-label").textContent = variant.tone
         ? `Цвет: ${variant.tone}`
         : "Цвет";
-      document.getElementById("color-options").innerHTML = many
-        ? item.variants.map((option, index) =>
-            `<button type="button" class="tone${index === currentTone ? " on" : ""}" data-tone="${index}" style="--tone:${option.color}" aria-label="${option.tone || "Цвет"}"></button>`
-          ).join("")
-        : "";
+      document.getElementById("color-options").innerHTML = toneOptions.map((option, index) =>
+        `<button type="button" class="tone${index === currentTone ? " on" : ""}" data-tone="${index}" style="--tone:${option.color}" aria-label="${option.tone || "Цвет"}"></button>`
+      ).join("");
       const options = listedSizes(variant.size);
       const range = document.getElementById("size-range");
       const sizes = document.getElementById("product-sizes");
@@ -1524,9 +1558,6 @@
       const priceEl = document.getElementById("product-price");
       priceEl.hidden = !variant.price;
       priceEl.textContent = variant.price || "";
-      const sourceEl = document.getElementById("product-source");
-      sourceEl.hidden = !data.source;
-      sourceEl.innerHTML = data.source ? `Источник: <a href="${data.sourceHref}">${data.source}</a>` : "";
       document.getElementById("choice").textContent = options.length
         ? `Выберите размер. ${orderLater}`
         : orderLater;
