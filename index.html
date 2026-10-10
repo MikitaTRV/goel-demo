@@ -34,12 +34,13 @@
       -webkit-appearance: none;
       appearance: none;
     }
-    .wrap { width: min(980px, calc(100% - 48px)); margin: 0 auto; }
+    .wrap { width: min(980px, calc(100% - 32px)); margin: 0 auto; }
     header {
       display: flex;
       align-items: center;
-      gap: 28px;
-      padding: 18px 0;
+      flex-wrap: wrap;
+      gap: 14px 24px;
+      padding: 16px 0;
       border-bottom: 1px solid var(--line);
     }
     .mark {
@@ -162,10 +163,6 @@
     .catalog-group .items { padding-top: 14px; padding-bottom: 8px; }
     .item {
       background-color: var(--paper);
-      background-image: linear-gradient(var(--swatch), var(--swatch));
-      background-repeat: no-repeat;
-      background-size: 100% 280px;
-      background-position: top left;
       border: 1px solid var(--line);
       display: flex;
       flex-direction: column;
@@ -173,20 +170,21 @@
       text-align: left;
       color: inherit;
       text-decoration: none;
+      min-width: 0;
     }
     .item:hover { border-color: #cfc6bb; }
     .cloth {
-      height: 280px;
+      aspect-ratio: 1 / 1;
+      width: 100%;
+      height: auto;
       flex: none;
       position: relative;
       outline: 1px solid #cfc6bb;
       outline-offset: -1px;
       background-color: var(--swatch);
-      box-shadow: inset 0 0 0 280px var(--swatch);
       overflow: hidden;
     }
     .cloth.has-photo, .product-cloth.has-photo {
-      box-shadow: none;
       background-color: #ebe4da;
       background-image: none;
     }
@@ -194,8 +192,8 @@
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      object-position: center;
+      object-fit: cover;
+      object-position: center top;
       opacity: 1;
       transition: opacity 0.35s ease;
     }
@@ -222,15 +220,36 @@
     .stock[hidden] { display: none; }
     .ahead { margin: 8px 0 0; font-size: 15px; line-height: 1.5; }
     .order { margin: 16px 0 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
-    .product { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items: start; }
+    .product { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 28px; align-items: stretch; }
     .product-cloth {
-      height: min(72vh, 640px);
+      aspect-ratio: 1 / 1;
+      width: min(100%, 640px, 72vh);
+      max-width: 100%;
+      height: auto;
+      justify-self: start;
       position: relative;
       outline: 1px solid #cfc6bb;
       outline-offset: -1px;
       background-color: var(--swatch, #ebe4da);
       overflow: hidden;
     }
+    .product-copy {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+    .product-options {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 168px;
+    }
+    .product-actions {
+      margin-top: auto;
+      padding-top: 22px;
+    }
+    .product-actions .buy { margin-top: 0; }
+    .product-actions .order { margin-top: 12px; }
     .product-cloth.has-photo {
       cursor: zoom-in;
     }
@@ -384,9 +403,9 @@
     .sizes p { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
     .sizes div { display: flex; flex-wrap: wrap; gap: 8px; }
     .size {
-      width: 52px;
+      min-width: 52px;
       height: 40px;
-      padding: 0;
+      padding: 0 10px;
       border: 1px solid var(--line);
       background: var(--paper);
       text-align: center;
@@ -404,11 +423,38 @@
       font-size: 15px;
       cursor: default;
     }
+    @media (max-width: 920px) {
+      .items { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    }
     @media (max-width: 800px) {
       h1 { font-size: 28px; }
-      .items, .product { grid-template-columns: 1fr; }
-      .product-cloth { height: 280px; }
-      header { gap: 16px; }
+      .brand-head h1 { font-size: 26px; }
+      .product { grid-template-columns: 1fr; gap: 20px; }
+      .product-cloth { width: 100%; justify-self: stretch; }
+      .product-copy { min-height: 0; }
+      .product-options { min-height: 140px; }
+      header { gap: 12px 16px; }
+      .crumbs { flex-wrap: wrap; margin: 20px 0 16px; }
+    }
+    @media (max-width: 560px) {
+      .wrap { width: calc(100% - 24px); }
+      h1 { font-size: 24px; }
+      .brand-head h1 { font-size: 22px; }
+      .verse { font-size: 15px; }
+      .items { grid-template-columns: 1fr; gap: 12px; padding: 20px 0 32px; }
+      .item .body { padding: 14px; }
+      nav.links { gap: 12px; font-size: 14px; }
+      .brand { grid-template-columns: 52px 1fr auto; gap: 10px; padding: 10px; }
+      .swatch { width: 52px; height: 52px; }
+      .brand b { font-size: 16px; }
+      .filters button { padding: 8px 12px; }
+      .size { min-width: 48px; height: 40px; }
+      .tone { width: 34px; height: 34px; }
+      .buy { width: 100%; text-align: center; }
+      .lightbox { padding: 12px; }
+      .lightbox img { max-height: calc(100vh - 24px); }
+      .lightbox-nav.prev { left: 8px; }
+      .lightbox-nav.next { right: 8px; }
     }
   </style>
 </head>
@@ -542,18 +588,22 @@
         </div>
         <div class="product-copy">
           <h1 id="product-title"></h1>
-          <div class="colors" id="product-colors" hidden>
-            <p id="color-label">Цвет</p>
-            <div id="color-options"></div>
+          <div class="product-options">
+            <div class="colors" id="product-colors" hidden>
+              <p id="color-label">Цвет</p>
+              <div id="color-options"></div>
+            </div>
+            <p class="size-range" id="size-range" hidden></p>
+            <div class="sizes" id="product-sizes" hidden>
+              <p>Размер</p>
+              <div id="size-options"></div>
+            </div>
+            <p class="product-price" id="product-price" hidden></p>
           </div>
-          <p class="size-range" id="size-range" hidden></p>
-          <div class="sizes" id="product-sizes" hidden>
-            <p>Размер</p>
-            <div id="size-options"></div>
+          <div class="product-actions">
+            <button type="button" class="buy">Заказать</button>
+            <p class="order" id="choice">Оформление заказа ещё не включено.</p>
           </div>
-          <p class="product-price" id="product-price" hidden></p>
-          <button type="button" class="buy">Заказать</button>
-          <p class="order" id="choice">Оформление заказа ещё не включено.</p>
         </div>
       </article>
     </section>
@@ -885,35 +935,39 @@
     country: "Беларусь",
     title: "fami.ly.by",
     blurb: "",
-    note: "Цены в открытых подписях Instagram нет.",
+    note: "",
     items: [
       {
         name: "Футболка «Иисус — путь, истина, жизнь»",
         slug: "put",
+        gender: "women",
         variants: [
-          { tone: "белый", color: "#f4f1ea", size: "", price: "", photos: ["img/fami/put-white-01.jpg"], photo: "img/fami/put-white-01.jpg" },
-          { tone: "чёрный", color: "#1c1c1c", size: "", price: "", photos: ["img/fami/put-black-01.jpg"], photo: "img/fami/put-black-01.jpg" }
+          { tone: "белый", color: "#f4f1ea", size: "XS–2XL", price: "", photos: ["img/fami/put-white-01.jpg"], photo: "img/fami/put-white-01.jpg" },
+          { tone: "чёрный", color: "#1c1c1c", size: "XS–2XL", price: "", photos: ["img/fami/put-black-01.jpg"], photo: "img/fami/put-black-01.jpg" }
         ]
       },
       {
         name: "Футболка «Лев и Агнец»",
         slug: "lev-agnets",
+        gender: "men",
         variants: [
-          { tone: "чёрный", color: "#1c1c1c", size: "", price: "", photos: ["img/fami/lev-agnets-01.jpg"], photo: "img/fami/lev-agnets-01.jpg" }
+          { tone: "чёрный", color: "#1c1c1c", size: "XS–2XL", price: "", photos: ["img/fami/lev-agnets-01.jpg"], photo: "img/fami/lev-agnets-01.jpg" }
         ]
       },
       {
         name: "Футболка JESUS",
         slug: "jesus",
+        gender: "men",
         variants: [
-          { tone: "чёрный", color: "#1c1c1c", size: "", price: "", photos: ["img/fami/jesus-lion-01.jpg"], photo: "img/fami/jesus-lion-01.jpg" }
+          { tone: "чёрный", color: "#1c1c1c", size: "XS–2XL", price: "", photos: ["img/fami/jesus-lion-01.jpg"], photo: "img/fami/jesus-lion-01.jpg" }
         ]
       },
       {
         name: "Футболка «Бог спустился, чтобы поднялись мы»",
         slug: "bog-spustilsya",
+        gender: "men",
         variants: [
-          { tone: "чёрный", color: "#1c1c1c", size: "", price: "", photos: ["img/fami/glavnoe-01.jpg"], photo: "img/fami/glavnoe-01.jpg" }
+          { tone: "чёрный", color: "#1c1c1c", size: "XS–2XL", price: "", photos: ["img/fami/glavnoe-01.jpg"], photo: "img/fami/glavnoe-01.jpg" }
         ]
       }
     ]
@@ -1161,9 +1215,30 @@
     blurb: "Футболки",
     note: "Показаны не все вещи.",
     items: [
-      ["#d9d9d9", "Футболка Classic STRENGTH", "Оверсайз", "2000 ₽", "strength"],
-      ["#f7f4ee", "Футболка Women VICTORY", "Оверсайз", "2000 ₽", "victory"],
-      ["#fbfbfb", "Футболка HE'S MY DEFENDER", "Оверсайз", "2000 ₽", "defender"]
+      {
+        name: "Футболка Classic STRENGTH",
+        slug: "strength",
+        gender: "men",
+        variants: [
+          { tone: "", color: "#d9d9d9", size: "Oversize", price: "2000 ₽", photo: "" }
+        ]
+      },
+      {
+        name: "Футболка Women VICTORY",
+        slug: "victory",
+        gender: "women",
+        variants: [
+          { tone: "", color: "#f7f4ee", size: "Oversize", price: "2000 ₽", photo: "" }
+        ]
+      },
+      {
+        name: "Футболка HE'S MY DEFENDER",
+        slug: "defender",
+        gender: "unisex",
+        variants: [
+          { tone: "", color: "#fbfbfb", size: "Oversize", price: "2000 ₽", photo: "" }
+        ]
+      }
     ]
   }
 };
@@ -1198,6 +1273,7 @@
         };
       });
       data.items.forEach((item) => {
+        if (!item.gender) item.gender = "unisex";
         item.variants.forEach((variant) => {
           if (!Array.isArray(variant.photos) || !variant.photos.length) {
             variant.photos = variant.photo ? [variant.photo] : [];
@@ -1326,21 +1402,27 @@
       }
     }
 
+    function itemMatchesGender(item, gender) {
+      if (!gender || gender === "all") return true;
+      if (!item.gender || item.gender === "unisex") return true;
+      return item.gender === gender;
+    }
+
     function brandHasGender(data) {
-      return data.items.some((item) => item.gender === "women" || item.gender === "men");
+      return data.items.some((item) => item && item.slug && Array.isArray(item.variants));
     }
 
     function filterItemsByGender(list, gender) {
       if (!gender || gender === "all") return list;
-      return list.filter((item) => item.gender === gender);
+      return list.filter((item) => itemMatchesGender(item, gender));
     }
 
     function catalogEntries(gender) {
       return Object.entries(brands)
         .map(([id, data]) => {
-          const filtered = gender === "all"
-            ? data.items.filter((item) => item && item.slug && Array.isArray(item.variants))
-            : data.items.filter((item) => item && item.slug && item.gender === gender);
+          const filtered = data.items.filter((item) =>
+            item && item.slug && Array.isArray(item.variants) && itemMatchesGender(item, gender)
+          );
           return filtered.length ? { id, data, items: filtered } : null;
         })
         .filter(Boolean);
@@ -1356,13 +1438,15 @@
 
     function listedSizes(size) {
       if (!size) return [];
-      const range = size.split("–");
+      const raw = String(size).trim();
+      if (/^oversize$/i.test(raw) || /^оверсайз$/i.test(raw)) return ["Oversize"];
+      const range = raw.split("–");
       if (range.length === 2) {
         const from = sizeScale.indexOf(range[0].trim());
         const to = sizeScale.indexOf(range[1].trim());
         if (from !== -1 && to >= from) return sizeScale.slice(from, to + 1);
       }
-      const parts = size.split(",").map((part) => part.trim().replace(/^XXL$/i, "2XL")).filter(Boolean);
+      const parts = raw.split(",").map((part) => part.trim().replace(/^XXL$/i, "2XL")).filter(Boolean);
       if (parts.length === 1 && sizeScale.includes(parts[0])) return parts;
       return parts.length > 1 ? parts : [];
     }
